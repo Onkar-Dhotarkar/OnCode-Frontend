@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Anton&family=Archivo+Black&family=Baloo+Bhai+2:wght@400;600&family=Bangers&family=Bebas+Neue&family=Bree+Serif&family=Kablammo&family=Lato:ital,wght@1,700&family=Mochiy+Pop+P+One&family=Open+Sans:wght@300&family=Raleway:wght@500&family=Righteous&family=Roboto:ital,wght@0,100;0,400;0,500;1,100&family=Staatliches&family=Supermercado+One&family=Tilt+Warp&family=Ubuntu:wght@300&family=Varela+Round&display=swap');
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+input {
+  outline: none;
+}
+
+.password img,
+.confirmpassword img {
+  width: 20px;
+}
+
+.wrapper {
+  border-top-left-radius: 32px;
+  border-bottom-left-radius: 32px;
+}
+
+.bgsignup {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.logwrapper {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.logbgsignup {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.transition {
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.fade-slide-in {
+  opacity: 0;
+  transform: translateX(-1.6%);
+  transition: opacity 0.6s ease-in-out, transform 0.65s ease-in;
+}
+
+.fade-slide-in.loaded {
+  opacity: 1;
+  transform: translateX(0%);
+}
+
+.background-grad {
+  background-color: #fc5296;
+  background-blend-mode: darken;
+  background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%);
+}
+
+.disabled-background {
+  background-color: gray;
+}
+
+.border-profile {
+  padding: 1.8px;
+  border: 1.5px solid #fc5296;
+}
+
+.setHeight {
+  height: 300px;
+}
+
+.banner_color {
+  background-color: #e288f9;
+  background-image: linear-gradient(315deg, #f9e1ad 0%, #f5d0ca 74%);
+}
+
+.form-shadow {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 10px 0px;
+}
+
+.resize-div {
+  resize: both;
+  overflow: auto;
+  padding: 8px;
+  min-width: 100px;
+  min-height: 100px;
+}
