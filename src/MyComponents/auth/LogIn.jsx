@@ -13,7 +13,7 @@ export default function Login() {
     const [loaded, setLoaded] = useState(false)
     const [creating, setCreating] = useState(false)
     const navigate = useNavigate('')
-    const { setauthLoad, user } = useContext(AuthContext)
+    const { setauthLoad } = useContext(AuthContext)
     const [signInState, setSignInState] = useState({
         email: "",
         password: "",

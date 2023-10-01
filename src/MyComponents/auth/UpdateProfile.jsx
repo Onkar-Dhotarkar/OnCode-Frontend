@@ -28,8 +28,6 @@ import ChangeDescription from '../Popups/ProfilePopup/ChangeDescription'
 import ChangeOthers from '../Popups/ProfilePopup/ChangeOthers'
 import ReactCountryFlag from 'react-country-flag'
 import countryList from 'react-select-country-list'
-import { useSpeechSynthesis } from 'react-speech-kit';
-
 
 export default function UpdateProfile() {
 
@@ -54,7 +52,6 @@ export default function UpdateProfile() {
     const [user_skills, setUserskills] = useState(false)
     const [user_desc, setUserdesc] = useState(false)
     const [user_others, setUserothers] = useState(false)
-    const { speak } = useSpeechSynthesis();
 
     useEffect(() => {
         setauthLoad(30)

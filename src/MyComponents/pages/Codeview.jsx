@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { CodeContext } from '../contexts/CodeContext'
 import { getDoc, doc } from 'firebase/firestore'
-import edit from '../../images/micro/edit.png'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { db } from '../Firebase/Firebase'
 import copy from '../../images/micro/copy.png'
@@ -28,7 +27,6 @@ export default function Codeview(props) {
     const [code, setCode] = useState("")
     const [loaded, setLoaded] = useState(false)
     const [modal, setModal] = useState(false)
-    const [editdescription, seteditdescription] = useState(false)
 
     const getCode = useCallback(async () => {
         setauthLoad(30)

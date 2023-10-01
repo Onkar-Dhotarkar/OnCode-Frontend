@@ -154,7 +154,7 @@ if __name__ == "__main__":
                     fontSize={14}
                     wrapEnabled={true}
                     theme={theme ? 'dracula' : 'xcode'}
-                    mode={language != "python" ? 'c_cpp' : 'python'}
+                    mode={language !== "python" ? 'c_cpp' : 'python'}
                     value={code}
                     showPrintMargin={true}
                     showGutter={true}

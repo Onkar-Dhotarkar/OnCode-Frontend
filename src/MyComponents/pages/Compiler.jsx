@@ -15,15 +15,16 @@ import java from '../../images/bgs/java.png'
 import py from '../../images/bgs/python.png'
 import js from '../../images/bgs/js.png'
 import AceEditor from 'react-ace'
-import Loader from '../Popups/Others/Loader'
+
 import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/mode-csharp";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/mode-python";
-import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-jsx";
 import "ace-builds/src-noconflict/theme-dracula";
 import "ace-builds/src-noconflict/theme-xcode";
 import "ace-builds/src-noconflict/ext-language_tools"
+
 import toast from 'react-hot-toast'
 import { Modal, ModalBody, ModalHeader } from 'reactstrap'
 import Runner from '../Popups/Others/Runner'
@@ -155,7 +156,7 @@ export default function Compiler() {
             socketRef.current.off('joined');
             socketRef.current.off('disconnected');
         }
-    }, [])
+    }, [navigate, user.username])
 
 
     //other ide functions 
@@ -203,10 +204,8 @@ export default function Compiler() {
             </Modal>
 
 
-            {authenticated ? !loaded ? <div className='h-[100vh] flex justify-center items-center'>
-                <Loader title="Loading the editor" />
-            </div> :
-                <div className='parent-wrapper h-[100vh] flex '>
+            {authenticated ?
+                <div className={`parent-wrapper h-[100vh] flex fade-slide-in ${loaded ? 'loaded' : ''}`}>
                     <div className="room-handler bg-gray-100 h-full w-[12%] text-center">
                         <div className="user flex flex-col items-center py-3">
                             <img className='w-9 h-9 rounded-full' src={user.userprofile} alt="" />
@@ -334,7 +333,7 @@ export default function Compiler() {
                                 <label htmlFor="Preferences" className='ml-2 text-md text-slate-600'>Other preferences</label>
                                 <div className="font-size">
                                     <label className='ml-2 mt-2'>Set font size</label> <br />
-                                    <input type="text" placeholder='Font size ' value={fontsize && fontsize || 14} className='rounded-md font-normal shadow-sm text-slate-500 w-[85%] text-sm py-2 px-2' onChange={(e) => {
+                                    <input type="text" placeholder='Font size ' value={(fontsize && fontsize) || 14} className='rounded-md font-normal shadow-sm text-slate-500 w-[85%] text-sm py-2 px-2' onChange={(e) => {
                                         setFontsize(parseInt(e.target.value))
                                     }} />
                                 </div>

@@ -3,6 +3,7 @@ import run from '../../../images/micro/play.png'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import Loader from './Loader'
+
 export default function Runner({ code, cname, clanguage }) {
 
     const [generatingOutput, setgeneratingOutput] = useState(false)
@@ -20,7 +21,7 @@ export default function Runner({ code, cname, clanguage }) {
             return
         }
         setgeneratingOutput(true)
-        await axios.post(process.env.RUNNER_URL, {
+        await axios.post(process.env.RUNNER_URL || "http://localhost:5000/execute", {
             code,
             cname,
             clanguage,
@@ -37,9 +38,10 @@ export default function Runner({ code, cname, clanguage }) {
                 setgeneratingOutput(false)
             }
         }).catch((err) => {
+            console.log(err);
             toast.error(err.message)
             setgeneratingOutput(false)
-            setResponse("Filed to execute the code")
+            setResponse("Failed to execute the code")
             setError(true)
         })
     }
