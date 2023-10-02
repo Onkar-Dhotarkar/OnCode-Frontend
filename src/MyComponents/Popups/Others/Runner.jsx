@@ -21,7 +21,7 @@ export default function Runner({ code, cname, clanguage }) {
             return
         }
         setgeneratingOutput(true)
-        await axios.post(process.env.RUNNER_URL || "http://localhost:5000/execute", {
+        await axios.post(process.env.RUNNER_URL || "https://oncode-backend-qnk0.onrender.com/execute", {
             code,
             cname,
             clanguage,
