@@ -14,6 +14,9 @@ import c_sharp from '../../images/bgs/c_sharp.png'
 import java from '../../images/bgs/java.png'
 import py from '../../images/bgs/python.png'
 import js from '../../images/bgs/js.png'
+import failure from '../../images/micro/failure.png'
+import tick from '../../images/micro/success.png'
+
 import AceEditor from 'react-ace'
 
 import "ace-builds/src-noconflict/mode-c_cpp";
@@ -61,6 +64,7 @@ export default function Compiler() {
     const [createRoom, setCreateRoom] = useState(false)
     const [roomId, setRoomId] = useState('')
     const [usersInRoom, setUsersinRoom] = useState([])
+    const [seeall, setSeeAll] = useState(false)
 
     //local function 
     const handleEditorChange = (value) => {
@@ -173,7 +177,6 @@ export default function Compiler() {
 
     return (
         <div>
-
             {/* //popup modals */}
             <Modal isOpen={execute} toggle={() => { isExecuting(!execute) }} size='lg'>
                 <ModalHeader toggle={() => { isExecuting(!execute) }}>
@@ -181,6 +184,28 @@ export default function Compiler() {
                 </ModalHeader>
                 <ModalBody className='flex justify-center items-center'>
                     <Runner code={codeInfo.code} cname={codeInfo.codename} clanguage={codeInfo.codelang} />
+                </ModalBody>
+            </Modal>
+
+            <Modal isOpen={seeall} toggle={() => { setSeeAll(!seeall) }}>
+                <ModalHeader toggle={() => { setSeeAll(!seeall) }}>
+                    Users connected in room
+                </ModalHeader>
+                <ModalBody>
+                    <span className='text-sm font-semibold text-slate-700 w-[90%] text-start mx-auto px-4 py-2'>Members in room</span>
+                    <div className='w-full flex items-center gap-2 flex-col mt-2'>
+                        {usersInRoom.map((u, i) => {
+                            return (
+                                <div key={u.socketId} className='w-[90%] mx-auto form-shadow flex justify-between px-3 py-2 text-sm font-semibold text-slate-700 items-center'>
+                                    <div className='flex justify-start gap-2 items-center'>
+                                        <Avatar name={u.username} size={29} round="4px" style={{ fontsize: "12px" }} />
+                                    </div>
+                                    {u.username}
+                                    {i === 0 ? <label>H</label> : usersInRoom.at(0).username === user.username ? <span><img src={failure} alt="" className='w-3 h-3' /></span> : <img src={tick} className='w-3 h-3'></img>}
+                                </div>
+                            )
+                        })}
+                    </div>
                 </ModalBody>
             </Modal>
 
@@ -209,7 +234,6 @@ export default function Compiler() {
                     <div className="room-handler bg-gray-100 h-full w-[12%] text-center">
                         <div className="user flex flex-col items-center py-3">
                             <img className='w-9 h-9 rounded-full' src={user.userprofile} alt="" />
-                            <label label className='font-semibold text-slate-900 text-sm' > {user.username}</label >
                         </div >
                         <label className='ml-2 text-sm font-semibold'>Name of program</label> <br />
                         <input type="text" placeholder='Name' className='rounded-md font-normal shadow-sm text-slate-500 w-[85%] mt-1 text-sm py-2 px-2' onChange={(e) => {
@@ -235,10 +259,11 @@ export default function Compiler() {
                                             )
                                         })
                                     }
-                                    <div className='font-semibold text-lg text-slate-600 cursor-pointer'>...</div>
+                                    <div className='font-semibold text-lg text-slate-600 cursor-pointer' onClick={() => setSeeAll(true)}>...</div>
                                 </div>
                                 <button className="leave mt-4 mx-auto bg-gray-300 text-sm text-white font-semibold w-[84%] py-2 rounded-md" onClick={() => {
                                     navigate("/")
+                                    toast.success("You left the room")
                                 }}>
                                     Leave room
                                 </button>
@@ -266,28 +291,31 @@ export default function Compiler() {
                         </button>}
                     </div >
                     <div className="editor w-[70%] pt-2 px-2">
-                        {<AceEditor
-                            className={`${!editor_theme ? 'form-shadow' : ''}`}
-                            placeholder="Coding, once in never out"
-                            style={{ height: "calc(100%)", width: "calc(100%)", borderRadius: "5px", padding: "calc(12px)" }}
-                            mode={codeInfo.codelang !== "c" && codeInfo.codelang !== "cpp" ? codeInfo.codelang : "c_cpp"}
-                            theme={editor_theme ? 'dracula' : 'xcode'}
-                            fontSize={fontsize}
-                            showPrintMargin={true}
-                            showGutter={true}
-                            highlightActiveLine={true}
-                            wrapEnabled={true}
-                            value={codeInfo.code}
-                            setOptions={{
-                                useWorker: false,
-                                enableBasicAutocompletion: true,
-                                enableLiveAutocompletion: true,
-                                enableSnippets: true,
-                                showLineNumbers: true,
-                                tabSize: 2,
-                            }}
-                            onChange={handleEditorChange}
-                        />}
+                        {
+
+
+                            <AceEditor
+                                className={`${!editor_theme ? 'form-shadow' : ''}`}
+                                placeholder="Coding, once in never out"
+                                style={{ height: "calc(100%)", width: "calc(100%)", borderRadius: "5px", padding: "calc(12px)" }}
+                                mode={codeInfo.codelang !== "c" && codeInfo.codelang !== "cpp" ? codeInfo.codelang : "c_cpp"}
+                                theme={editor_theme ? 'dracula' : 'xcode'}
+                                fontSize={fontsize}
+                                showPrintMargin={true}
+                                showGutter={true}
+                                highlightActiveLine={true}
+                                wrapEnabled={true}
+                                value={codeInfo.code}
+                                setOptions={{
+                                    useWorker: false,
+                                    enableBasicAutocompletion: true,
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: true,
+                                    showLineNumbers: true,
+                                    tabSize: 2,
+                                }}
+                                onChange={handleEditorChange}
+                            />}
                     </div>
                     <div className="features">
                         <div className="basic-controls flex justify-start gap-2 mt-[0.62rem] ml-2">
