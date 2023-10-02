@@ -201,7 +201,7 @@ export default function Compiler() {
                                         <Avatar name={u.username} size={29} round="4px" style={{ fontsize: "12px" }} />
                                     </div>
                                     {u.username}
-                                    {i === 0 ? <label>H</label> : usersInRoom.at(0).username === user.username ? <span><img src={failure} alt="" className='w-3 h-3' /></span> : <img src={tick} className='w-3 h-3'></img>}
+                                    {i === 0 ? <label>H</label> : usersInRoom.at(0).username === user.username ? <span><img src={failure} alt="" className='w-3 h-3' /></span> : <img src={tick} alt='' className='w-3 h-3'></img>}
                                 </div>
                             )
                         })}
@@ -254,7 +254,7 @@ export default function Compiler() {
                                         usersInRoom.map((roomuser) => {
                                             return (
                                                 <div key={roomuser}>
-                                                    <Avatar name={roomuser.username} size={31.5} round="4px" />
+                                                    <Avatar name={roomuser.username} size={31.5} round="4.5px" />
                                                 </div>
                                             )
                                         })

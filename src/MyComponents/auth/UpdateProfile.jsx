@@ -57,15 +57,30 @@ export default function UpdateProfile() {
         setauthLoad(30)
         async function getData() {
             try {
-                const docRef = doc(db, user.useruid, user.useruid + "_userdata")
+                const docRef = doc(db, user.useruid, user.useruid + "_userdata");
                 const skills = (await getDoc(docRef)).data().skills;
                 const desc = (await getDoc(docRef)).data().description;
                 const country = (await getDoc(docRef)).data().country;
                 const line = (await getDoc(docRef)).data().oneliner;
+
                 setfetchedskills(skills)
                 setfetchedesc(desc)
                 setfetchedcountry(country)
                 setfetchedline(line)
+
+                console.log(!desc + "s");
+                if (skills.length === 0) {
+                    setfetchedskills(null)
+                }
+                if (!desc) {
+                    setfetchedesc(null)
+                }
+                if (!country) {
+                    setfetchedcountry(null)
+                }
+                if (!line) {
+                    setfetchedline(null)
+                }
             } catch (e) {
                 //error
             }
@@ -109,7 +124,7 @@ export default function UpdateProfile() {
                     Logout from current account
                 </ModalHeader>
                 <ModalBody className="flex items-center">
-                    <PopMessage src={log} main="Logout For Now" sub='Sure then hit the button' description="After logging out, you will not be able to access any of our coding facilities" content="Log out" clickFunction={signOutFromCurrentAccount} />
+                    <PopMessage src={log} main="Logout For Now" description="After logging out, you will not be able to access any of our coding facilities" content="Log out" clickFunction={signOutFromCurrentAccount} />
                 </ModalBody>
             </Modal>
 
@@ -196,9 +211,10 @@ export default function UpdateProfile() {
                                 <img src={mail} className='w-5 h-5' alt="" />
                                 {user.usermail}
                             </div>
-                            <div className='text-sm text-slate-600 font-semibold flex items-center gap-2 mt-1'>
+                            <div className='text-sm text-slate-600 font-semibold flex items-center gap-2 mt-1 ml-[0.15rem]'>
                                 <div className="countryname flex items-center gap-2">
-                                    {fetchedcountry && <ReactCountryFlag
+                                    <div className='w-3 h-3 background-grad rounded-full'></div>
+                                    {fetchedcountry !== null && <ReactCountryFlag
                                         className='rounded-lg'
                                         countryCode={fetchedcountry}
                                         svg
@@ -206,11 +222,11 @@ export default function UpdateProfile() {
                                             height: '2.3em',
                                             width: '2.3em'
                                         }} />}
-                                    {fetchedcountry ? countryList().getLabel(fetchedcountry) : <BarLoader cssOverride={{ width: 80, height: 3, borderRadius: 4 }} color='#fb6976' />}
+                                    {fetchedline === null ? <label>Add your nationality</label> : fetchedcountry ? countryList().getLabel(fetchedcountry) : <BarLoader cssOverride={{ width: 80, height: 3, borderRadius: 4 }} color='#fb6976' />}
                                 </div>
                                 <div className='flex justify-start items-center gap-2 capitalize'>
                                     <div className='w-3 h-3 background-grad rounded-full'></div>
-                                    {fetchedline ? fetchedline : <BarLoader cssOverride={{ width: 80, height: 3, borderRadius: 4 }} color='#fb6976' />}
+                                    {fetchedline === null ? <label>Add a one liner about yourself</label> : fetchedline ? fetchedline : <BarLoader cssOverride={{ width: 80, height: 3, borderRadius: 4 }} color='#fb6976' />}
                                 </div>
                             </div>
                             <div className='flex gap-2 mt-1'>
@@ -251,7 +267,6 @@ export default function UpdateProfile() {
                                     Change others
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -261,7 +276,7 @@ export default function UpdateProfile() {
                             <img src={codeskills} className='w-6 h-6 mt-1' alt="" />
                         </div>
                         <div className='skills text-sm flex flex-wrap justify-start gap-2 mt-2 '>
-                            {fetchedskills.length !== 0 ? fetchedskills.map((element) => {
+                            {fetchedskills === null ? <label className='text-slate-600 border border-slate-100 font-semibold px-3 py-2 text-sm rounded-3xl cursor-pointer flex items-center justify-center gap-2 mt-2'>Show your skills</label> : fetchedskills.length !== 0 ? fetchedskills.map((element) => {
                                 return (<div key={element} className='text-slate-600 font-semibold flex justify-center items-center border border-slate-400 w-fit px-4 py-1 rounded-lg capitalize'>
                                     {element}
                                 </div>)
@@ -291,8 +306,8 @@ export default function UpdateProfile() {
                         </div>
                         <div className='skills text-sm flex flex-wrap justify-start gap-2 mt-3 '>
                             <div className={`bio text-sm font-semibold text-slate-600 pr-5 ${!fetchedesc ? 'flex flex-col items-center w-full' : ''}`}>
-                                <div className={`${fetchedesc ? '' : "ml-7"} text-start w-full`}>
-                                    {fetchedesc ? <div>
+                                <div className={`${fetchedesc != null ? '' : "ml-7"} text-start w-full`}>
+                                    {fetchedesc === null ? <div className='flex justify-start items-center'>Add a short description about you and show your <span><img src={heart} className='w-3 h-3 mx-1 mt-[0.1rem]' alt="" /></span>for coding</div> : fetchedesc ? <div>
                                         {fetchedesc} <br />
                                     </div> : <Loader />}
                                 </div>
