@@ -6,6 +6,7 @@ import up from '../../images/micro/up.png'
 import play from '../../images/micro/play.png'
 import save from '../../images/micro/upload.png'
 import copy from '../../images/micro/copy-white.png'
+import chat from '../../images/micro/chat.png'
 import theme from '../../images/micro/light.png'
 import moon from '../../images/micro/moon.png'
 import c from '../../images/bgs/c.png'
@@ -220,7 +221,7 @@ export default function Compiler() {
                             Paste invitation ROOM ID
                         </div>
                         <input type="text" placeholder='ROOM ID' className='mt-2 rounded-md font-normal shadow-sm text-slate-500 w-[85%] text-sm py-2 px-2' value={roomId} onChange={(e) => { setRoomId(e.target.value) }} />
-                        <button className='bg-[#fb6976] mt-3 text-sm font-semibold flex justify-center items-center gap-2 text-white w-[84%] py-2 rounded-md mx-auto' onClick={joinRoom}>Enter the Room
+                        <button className='bg-[#fb6976] mt-3 text-sm font-semibold flex justify-center items-center gap-2 text-white w-[79%] py-2 rounded-md mx-auto' onClick={joinRoom}>Enter the Room
                             <img className='w-3 h-3' src={right} alt="" />
                         </button>
                         <label className='text-slate-600 text-sm mt-2 py-2' htmlFor="">Don't have a room id ? <span className='text-[#fb6976] underline underline-offset-2 cursor-pointer' onClick={createNewRoomId}>new room</span></label>
@@ -241,7 +242,7 @@ export default function Compiler() {
                         }} />
 
                         <div className="room-content text-center">
-                            <button className='bg-[#fb6976] mt-3 text-sm font-semibold text-white w-[84%] py-2 rounded-md' onClick={() => {
+                            <button className='bg-[#fb6976] mt-3 text-sm font-semibold text-white w-[79%] py-2 rounded-md' onClick={() => {
                                 setCreateRoom(true)
                             }}>
                                 {!room ? 'Create room + ' : usersInRoom.length >= 1 && usersInRoom.at(0).username.split(" ")[0] + "'s room"}
@@ -249,25 +250,25 @@ export default function Compiler() {
 
                             {room && <div className="room-members text-slate-900 font-semibold text-sm mt-3">
                                 Room members
-                                <div className="members flex flex-wrap justify-center w-[75%] mx-auto gap-2 mt-3">
+                                <div className="members flex flex-wrap justify-center w-[79%] mx-auto gap-2 mt-3">
                                     {
                                         usersInRoom.map((roomuser) => {
                                             return (
                                                 <div key={roomuser}>
-                                                    <Avatar name={roomuser.username} size={31.5} round="4.5px" />
+                                                    <Avatar name={roomuser.username} size={35} round="4px" />
                                                 </div>
                                             )
                                         })
                                     }
                                     <div className='font-semibold text-lg text-slate-600 cursor-pointer' onClick={() => setSeeAll(true)}>...</div>
                                 </div>
-                                <button className="leave mt-4 mx-auto bg-gray-300 text-sm text-white font-semibold w-[84%] py-2 rounded-md" onClick={() => {
+                                <button className="leave mt-4 mx-auto bg-gray-300 text-sm text-white font-semibold w-[79%] py-2 rounded-md" onClick={() => {
                                     navigate("/")
                                     toast.success("You left the room")
                                 }}>
                                     Leave room
                                 </button>
-                                {usersInRoom.length > 1 && usersInRoom.at(0).username === user.username && <button className="leave mt-1 bg-gray-300 text-sm text-white font-semibold w-[84%] py-2 rounded-md" onClick={() => {
+                                {usersInRoom.length > 1 && usersInRoom.at(0).username === user.username && <button className="leave mt-1 bg-gray-300 text-sm text-white font-semibold w-[79%] py-2 rounded-md" onClick={() => {
                                     socketRef.current.emit('end-room', {
                                         roomId
                                     })
@@ -279,21 +280,22 @@ export default function Compiler() {
                             </div>}
                         </div>
 
-                        {room && <button className="bg-[#fb6976] mt-1 text-sm text-white font-semibold w-[84%] py-2 rounded-md flex justify-center items-center gap-2 mx-auto" onClick={() => {
+                        {room && <div className='w-[79%] flex justify-center items-center mx-auto gap-1 mt-[0.32rem]'> <button className="bg-[#fb6976] text-sm w-[50%] text-white font-semibold py-2 rounded-md flex justify-center items-center gap-2 mx-auto" onClick={() => {
                             navigator.clipboard.writeText(roomId).then(() => {
                                 toast.success("Room ID copid")
                             }).catch(() => {
                                 toast.success("Failed to copy Room ID")
                             })
                         }}>
-                            <img className='w-3 h-3' src={copy} alt="" />
-                            Room ID
-                        </button>}
+                            <img className='w-5 h-5' src={copy} alt="" />
+                        </button>
+                            <button className="bg-[#fb6976] w-[50%] text-sm text-white font-semibold py-2 rounded-md flex justify-center items-center gap-2 mx-auto">
+                                <img className='w-5 h-5' src={chat} alt="" />
+                            </button>
+                        </div>}
                     </div >
                     <div className="editor w-[70%] pt-2 px-2">
                         {
-
-
                             <AceEditor
                                 className={`${!editor_theme ? 'form-shadow' : ''}`}
                                 placeholder="Coding, once in never out"
@@ -355,7 +357,7 @@ export default function Compiler() {
                             <label className='ml-2 mt-2'>Replace</label> <br />
                             <input type="text" placeholder='Replace with ' className='rounded-md font-normal shadow-sm text-slate-500 w-[85%] text-sm py-2 px-2' onChange={(e) => { setReplace(e.target.value) }} />
 
-                            <button className='bg-[#fb6976] text-sm mt-3 text-white font-semibold w-[84%] py-2 rounded-md' onClick={replaceValues}>Replace</button>
+                            <button className='bg-[#fb6976] text-sm mt-3 text-white font-semibold w-[79%] py-2 rounded-md' onClick={replaceValues}>Replace</button>
 
                             <div className="customizations mt-3">
                                 <label htmlFor="Preferences" className='ml-2 text-md text-slate-600'>Other preferences</label>
@@ -367,7 +369,7 @@ export default function Compiler() {
                                 </div>
                                 <div className='mode-lang mt-2'>
                                     <label className='ml-2 mt-1 text-slate-900 text-sm font-semibold' htmlFor="">Set language</label>
-                                    <button className='bg-[#fb6976] w-[84%] py-2 mt-2 text-sm text-white font-semibold rounded-md capitalize flex justify-center items-center gap-2' onClick={() => {
+                                    <button className='bg-[#fb6976] w-[79%] py-2 mt-2 text-sm text-white font-semibold rounded-md capitalize flex justify-center items-center gap-2' onClick={() => {
                                         document.getElementById("list").classList.toggle('hidden')
                                         setLangBtn(!languageBtnSetOpen)
                                     }}>
