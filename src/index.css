@@ -111,7 +111,7 @@ input {
 }
 
 .chatbox.active {
-  width: 40%;
+  width: 35%;
   right: 10px;
   visibility: visible;
   opacity: 1;

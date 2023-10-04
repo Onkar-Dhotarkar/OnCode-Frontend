@@ -39,7 +39,7 @@ import { initSocket } from '../../socket'
 import { v4 } from 'uuid'
 import { useNavigate } from 'react-router-dom'
 import UserNotFoound from '../UserNotFound'
-import Avatar from 'react-avatar'
+import ScrollToBottom from 'react-scroll-to-bottom'
 
 export default function Compiler() {
 
@@ -70,11 +70,7 @@ export default function Compiler() {
     const [usersInRoom, setUsersinRoom] = useState([])
     const [seeall, setSeeAll] = useState(false)
     const [msg, setMsg] = useState('')
-
-    //color mapping for avatars 
-    const colorMap = [
-        "#ff5722", "#bdbdbd", "#1f6cfa", "#673ab7", "#4caf50", "#fd7e97", "#e91e63"
-    ]
+    const [msgList, setMsgList] = useState([])
 
     //local function 
     const handleEditorChange = (value) => {
@@ -108,6 +104,23 @@ export default function Compiler() {
         setCreateRoom(false)
     }
 
+    const sendMsgInRoom = () => {
+        if (!msg) {
+            return toast.error("Message can't be empty")
+        }
+        const currentTime = new Date().toLocaleTimeString().split(" ")[0]
+        socketRef.current.emit('send_message', {
+            username: user.username,
+            data: msg,
+            time: currentTime
+        })
+        const newMessage = {
+            sender: user.username,
+            message: msg,
+            timestamp: currentTime
+        }
+        setMsgList((list) => [...list, newMessage])
+    }
 
     useEffect(() => {
         const loaded_timeout = setTimeout(() => {
@@ -142,6 +155,15 @@ export default function Compiler() {
             //listening for code change event 
             socketRef.current.on('code-change', ({ code }) => {
                 setcodeInfo(previous => ({ ...previous, code: code }))
+            })
+
+            socketRef.current.on('receive_message', ({ username, data, time }) => {
+                const newMessage = {
+                    sender: username,
+                    message: data,
+                    timestamp: time
+                }
+                setMsgList((list) => [...list, newMessage])
             })
 
             //listening for disconnected event
@@ -252,19 +274,50 @@ export default function Compiler() {
             </Modal>
 
             {authenticated ?
-
                 <div className={`parent-wrapper relative h-[calc(100vh-50px)] flex fade-slide-in overflow-hidden ${loaded ? 'loaded' : ''}`}>
-
-                    <div id='roomchatbox' className='chatbox bg-white z-20 h-2/3 p-2 m-1 form-shadow rounded-md'>
+                    <div id='roomchatbox' className='chatbox bg-white z-20 h-2/3 p-2 m-1 form-shadow rounded-lg'>
+                        <div className={`msg_holder w-[98%] mx-auto h-[84%] overflow-y-scroll overflow-x-hidden scroll-smooth px-4 py-2`}>
+                            {
+                                msgList.map((msg) => {
+                                    return (
+                                        <div className={`w-full flex mt-3  ${msg.sender === user.username ? 'justify-end' : 'justify-start'}`}>
+                                            <div>
+                                                <div className={`${msg.sender === user.username ? 'bg-[#fb6976]' : 'bg-gray-300'} text-white font-semibold text-sm mt-1 flex flex-wrap justify-center items-center px-2 py-2 rounded-md w-fit max-w-xs break-words form-shadow`}>
+                                                    {msg.message}
+                                                </div>
+                                                <div className='flex justify-end items-center gap-1 mt-1 text-xs font-semibold'>
+                                                    <div>{msg.sender.split(" ")[0]}</div>
+                                                    <div>{msg.timestamp.split(":")[0] + ":" + msg.timestamp.split(":")[1]}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                         <div className='w-full h-fit absolute bottom-4 flex justify-center items-center gap-3'>
-                            <input type="text" placeholder='Message' className='text-slate-600 form-shadow text-sm px-3 py-2 rounded-md w-[85%]' onChange={(e) => setMsg(e.target.value)} />
-                            <button>
+                            <input
+                                type="text"
+                                placeholder='Send a message in Room' id='messageInput' className='text-slate-600 form-shadow text-sm px-3 py-2 rounded-md w-[85%]'
+                                onChange={(e) => setMsg(e.target.value)}
+                                onKeyDown={(event) => {
+                                    if (event.key === "Enter") {
+                                        sendMsgInRoom()
+                                        document.getElementById('messageInput').value = ""
+                                    }
+                                }}
+                            />
+                            <button className='bg-gray-200 p-2 rounded-md flex justify-center items-center' onClick={() => {
+                                sendMsgInRoom()
+                                document.getElementById('messageInput').value = ""
+                            }}>
                                 <img className='w-5 h-5' src={share} alt="" />
                             </button>
                         </div>
                     </div>
 
                     <div className='relative w-full flex justify-start z-10 h-full'>
+                        {/* left part handling room  */}
                         <div className="room-handler bg-gray-100 h-full w-[13.5%] text-center">
                             <div className="user flex flex-col items-center py-3">
                                 <img className='w-9 h-9 rounded-full' src={user.userprofile} alt="" />
@@ -275,7 +328,7 @@ export default function Compiler() {
                             }} />
 
                             <div className="room-content text-center">
-                                <button className='bg-[#fb6976] mt-3 text-sm font-semibold text-white w-[84%] py-2 rounded-md' onClick={() => {
+                                <button disabled={room} className='bg-[#fb6976] mt-3 text-sm font-semibold text-white w-[84%] py-2 rounded-md' onClick={() => {
                                     setCreateRoom(true)
                                 }}>
                                     {!room ? 'Create room + ' : usersInRoom.length >= 1 && usersInRoom.at(0).username.split(" ")[0] + "'s room"}
@@ -321,6 +374,7 @@ export default function Compiler() {
                                             <img className='w-5 h-5' src={chat} alt="" />
                                         </button>
                                     </div>
+
                                     {usersInRoom.length > 0 && usersInRoom.at(0).username === user.username &&
                                         <button className="leave mt-3 flex justify-center items-center gap-2 mx-auto bg-[#fb6976] text-sm text-white font-semibold w-[77%] py-2 rounded-md" onClick={() => {
                                             socketRef.current.emit('end-room', {
@@ -337,6 +391,8 @@ export default function Compiler() {
                             </div>
 
                         </div >
+
+                        {/* editor  */}
                         <div className="editor w-[70%] pt-2 px-2">
                             {
                                 <AceEditor
@@ -362,6 +418,8 @@ export default function Compiler() {
                                     onChange={handleEditorChange}
                                 />}
                         </div>
+
+                        {/* other tools  */}
                         <div className="features">
                             <div className="basic-controls flex justify-start gap-2 mt-[0.62rem] ml-2">
                                 <button className='bg-gray-200 p-2 rounded-full' onClick={() => {
@@ -441,7 +499,11 @@ export default function Compiler() {
                             </div>
                         </div>
                     </div>
-                </div > : <div className='flex justify-center items-center h-[70vh]'><UserNotFoound /></div>}
-        </div>
+                </div > :
+                <div className='flex justify-center items-center h-[70vh]'>
+                    <UserNotFoound />
+                </div>
+            }
+        </div >
     )
 }
