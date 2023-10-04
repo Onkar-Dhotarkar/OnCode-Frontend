@@ -21,7 +21,7 @@ export default function Runner({ code, cname, clanguage }) {
             return
         }
         setgeneratingOutput(true)
-        await axios.post("http://localhost:5000", {
+        await axios.post("http://localhost:5000/execute", {
             code,
             cname,
             clanguage,

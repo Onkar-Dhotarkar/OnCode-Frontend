@@ -98,3 +98,22 @@ input {
   min-width: 100px;
   min-height: 100px;
 }
+
+.chatbox {
+  width: 0%;
+  position: fixed;
+  bottom: 0;
+  right: -500px;
+  transform: (-50%, -50%);
+  transition: 0.5s;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.chatbox.active {
+  width: 40%;
+  right: 10px;
+  visibility: visible;
+  opacity: 1;
+  transition: 0.5s;
+}
