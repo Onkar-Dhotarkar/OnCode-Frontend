@@ -11,6 +11,7 @@ import Features from './Features'
 import { Link } from "react-router-dom"
 import PlayDemo from "./PlayDemo"
 import PlayWebDemo from "./PlayWebDemo"
+import Extras from "./Extras"
 
 export default function LandingPage(props) {
 
@@ -58,11 +59,12 @@ export default function LandingPage(props) {
 
                 <PlayDemo />
                 <PlayWebDemo />
+                <Extras />
 
                 <div className="user-testimonials mt-24 ">
                     <h2 className="text-center text-gray-900">Testimonials</h2>
                     <div className="testimonial-content max-w-[1200px] mt-8 flex justify-center mx-auto space-x-14 w-[70%]">
-                        <div className="testimonial_1 max-w-[45%] bg-gray-100 flex flex-col justify-start space-y-8 px-5 py-4 rounded-lg">
+                        <div className="testimonial_1 max-w-[55%] bg-gray-100 flex flex-col justify-start space-y-8 px-5 py-4 rounded-lg">
                             <div className="attribute-mark">
                                 <img src={quotation} alt="" />
                             </div>
@@ -70,11 +72,11 @@ export default function LandingPage(props) {
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae sint veniam amet quas fugiat nobis, iste mollitia perferendis. Alias facere perspiciatis voluptatem molestiae quaerat veritatis non voluptates? Eum, iure? Omnis.
                             </div>
                             <div className="user-name text-xl font-semibold text-slate-950">
-                                Elon Musk
+                                User123
                             </div>
                         </div>
 
-                        <div className="testimonial_2 max-w-[45%] bg-gray-100 flex flex-col justify-start space-y-8 px-5 py-4 rounded-lg">
+                        <div className="testimonial_2 max-w-[55%] bg-gray-100 flex flex-col justify-start space-y-8 px-5 py-4 rounded-lg">
                             <div className="attribute-mark">
                                 <img src={quotation} alt="" />
                             </div>
@@ -82,17 +84,18 @@ export default function LandingPage(props) {
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae sint veniam amet quas fugiat nobis, iste mollitia perferendis. Alias facere perspiciatis voluptatem molestiae quaerat veritatis non voluptates? Eum, iure? Omnis.
                             </div>
                             <div className="user-name text-xl font-semibold text-slate-950">
-                                Mark Zuckerberg
+                                User456
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="footerpart max-w-[1130px] flex justify-between items-baseline mx-auto mt-14">
+                <div className="footerpart w-[70%] flex justify-between items-baseline mx-auto mt-14">
                     <div className="footer-name-copyright flex items-center text-gray-400">
-                        <h4 className="text-gray-900">CodingMadeEasy</h4>
+                        <h4 className="text-slate
+                        -600">OnCode</h4>
                         <hr className="border border-none w-[0.2rem] h-11 bg-gray-400 mx-4" />
-                        &copy; Copyright 2023 CodingMadeEasy
+                        &copy; Copyright 2023 OnCode
                     </div>
                     <div className="flex items-center space-x-3">
                         <a href="prof1" target="blank"><img className="w-5" src={link_facebook} alt="" /></a>

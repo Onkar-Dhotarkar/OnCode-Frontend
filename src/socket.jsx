@@ -7,5 +7,5 @@ export const initSocket = async () => {
         timeout: 10000,
         transports: ['websocket'],
     };
-    return io(process.env.BACKEND_URL || "https://oncode-backend-qnk0.onrender.com", options);
+    return io("http://localhost:5000", options);
 };

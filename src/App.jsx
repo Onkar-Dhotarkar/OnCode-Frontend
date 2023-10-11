@@ -127,7 +127,6 @@ function App() {
               Explore Community
             </button>
             <button id='log-handler' className='text-slate-600 font-semibold rounded-md text-sm flex justify-center items-center gap-2 transition-all hover:text-[#fb6976]'>
-              {/* <img src={contact} className="w-5 h-5" alt="" /> */}
               Contact Us
             </button>
             <Link to='/we'>

@@ -12,6 +12,9 @@ import { useNavigate } from 'react-router-dom'
 import AceEditor from 'react-ace'
 import braces from '../../images/micro/braces.png'
 
+import "ace-builds/src-noconflict/mode-c_cpp"
+import "ace-builds/src-noconflict/mode-python"
+
 export default function PlayDemo() {
     const [theme, setTheme] = useState(true)
     const [code, setCode] = useState(`//PROGRAM TO FIND INVISIBLE CHARACTERS IN C
