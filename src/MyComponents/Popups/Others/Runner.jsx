@@ -22,7 +22,7 @@ export default function Runner({ code, clanguage }) {
             return
         }
         setgeneratingOutput(true)
-        await axios.post("http://localhost:5000/execute", {
+        await axios.post(process.env.RUNNER_URL || "https://oncode-backend-a5xg.onrender.com/execute", {
             code,
             cname,
             clanguage,
