@@ -167,7 +167,7 @@ function Compiler() {
             socketRef.current.off('joined');
             socketRef.current.off('disconnected');
         }
-    }, [reactNavigator, user.username])
+    }, [reactNavigator, user.username, newUser])
 
 
     return (
