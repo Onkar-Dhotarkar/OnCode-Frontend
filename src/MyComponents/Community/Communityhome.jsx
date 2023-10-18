@@ -41,7 +41,7 @@ export default function Communityhome() {
                 <div className="questions w-[80%] mx-auto">
                     <div className="question flex justify-center items-center gap-2 cursor-pointer py-2 rounded-md mt-2 hover:bg-[#eee] transition-all duration-500">
                         <div className='border-2 border-[#fb6976] w-11 h-11 rounded-full p-[2px]'>
-                            <img src={user.userprofile} className='rounded-full object-cover' alt="" />
+                            <img src={user.userprofile} className='object-cover rounded-full' alt="" />
                         </div>
                         <div className="question-content text-sm font-semibold text-slate-600 text-start w-[67%]">How to add app router in Next.js 13...</div>
                     </div>
@@ -51,10 +51,12 @@ export default function Communityhome() {
                 <div className="about-user mt-3">
                     <div className='flex justify-start ml-10 items-center gap-3'>
                         <div className='w-32 h-32 p-[4px] rounded-full border-4 border-[#fb6976]'>
-                            <img src={user.userprofile} className='rounded-full object-cover' alt="" />
+                            <img src={user.userprofile} className='w-full h-full object-cover' alt="" />
                         </div>
                         <div className='text-5xl font-bold text-slate-600 tracking-tight'>
-                            {user.username}
+                            <div className='capitalize'>
+                                {user.username}
+                            </div>
                             <div className="details flex items-center justify-start gap-2 text-slate-600 font-semibold text-sm tracking-normal">
                                 <div className='w-3 h-3 rounded-full bg-[#fb6976]'></div>
                                 {countryCode !== null && <ReactCountryFlag
