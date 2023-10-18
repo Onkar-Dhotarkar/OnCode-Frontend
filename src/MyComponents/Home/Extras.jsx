@@ -1,6 +1,5 @@
 import React from 'react'
 import extra from "../../images/bgs/figma_3.png"
-import target from "../../images/micro/target.png"
 export default function Extras() {
     return (
         <>

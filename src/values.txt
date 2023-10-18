@@ -1,7 +1,0 @@
-#fb6976
-error border - #f1aeb5
-error - #f8d7da
-
- <div className="account-creation-date text-end text-gray-400 text-xs w-[20.75rem] mx-auto mt-3">
-                        Account Created on {user.userdate}
-                    </div>

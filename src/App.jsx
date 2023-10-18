@@ -25,6 +25,7 @@ import Aboutus from './MyComponents/pages/Aboutus'
 import { Toaster } from 'react-hot-toast'
 import LoadingBar from 'react-top-loading-bar'
 import Webeditor from "./MyComponents/pages/Webeditor";
+import Communityhome from "./MyComponents/Community/Communityhome";
 
 
 function App() {
@@ -122,10 +123,11 @@ function App() {
             </div> */}
           </div>
           <div className="nav-components flex justify-between items-center space-x-6">
-            <button id='log-handler' className='text-slate-600 font-semibold rounded-md text-sm flex justify-center items-center gap-1 transition-all hover:text-[#fb6976]'>
-              {/* <img src={global_img} className="w-5 h-5" alt="" /> */}
-              Explore Community
-            </button>
+            <Link to='/community'>
+              <button className='font-semibold text-sm transition-all text-slate-600 hover:text-[#fb6976]'>
+                Explore Community
+              </button>
+            </Link>
             <button id='log-handler' className='text-slate-600 font-semibold rounded-md text-sm flex justify-center items-center gap-2 transition-all hover:text-[#fb6976]'>
               Contact Us
             </button>
@@ -170,6 +172,7 @@ function App() {
             <Route path="/codeview" Component={Codeview} />
             <Route path="/editor" Component={Compiler} />
             <Route path="/web-editor" Component={Webeditor} />
+            <Route path="/community" Component={Communityhome} />
           </Route>
         </ Routes>
       </Router >

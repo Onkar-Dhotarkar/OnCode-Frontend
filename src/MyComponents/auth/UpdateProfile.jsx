@@ -222,7 +222,7 @@ export default function UpdateProfile() {
                                             height: '2.3em',
                                             width: '2.3em'
                                         }} />}
-                                    {fetchedline === null ? <label>Add your nationality</label> : fetchedcountry ? countryList().getLabel(fetchedcountry) : <BarLoader cssOverride={{ width: 80, height: 3, borderRadius: 4 }} color='#fb6976' />}
+                                    {fetchedcountry === null ? <label>Add your nationality</label> : fetchedcountry ? countryList().getLabel(fetchedcountry) : <BarLoader cssOverride={{ width: 80, height: 3, borderRadius: 4 }} color='#fb6976' />}
                                 </div>
                                 <div className='flex justify-start items-center gap-2 capitalize'>
                                     <div className='w-3 h-3 background-grad rounded-full'></div>

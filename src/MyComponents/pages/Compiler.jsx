@@ -14,7 +14,6 @@ import sun from '../../images/micro/light.png'
 import sun_dark from '../../images/micro/sun-dark.png'
 import save from '../../images/micro/upload.png'
 import save_dark from '../../images/micro/upload_dark.png'
-import down from '../../images/micro/down.png'
 import { Modal, ModalBody } from 'reactstrap'
 import { v4 } from 'uuid'
 import toast from 'react-hot-toast';
@@ -46,6 +45,13 @@ function Compiler() {
     const [roomId, setRoomId] = useState('')
     const [room, isRoom] = useState(false)
     const [usersInRoom, setUsersInRoom] = useState([])
+    const [newRequest, setNewRequest] = useState(false)
+    const [newUser, setNewUser] = useState({
+        roomId: "",
+        username: "",
+        userprofile: "",
+        id: ""
+    })
     const socketRef = useRef(null)
     const [find, setFind] = useState('') //state for to be find value
     const [replace, setReplace] = useState('') //state for to be replace value
@@ -59,7 +65,6 @@ function Compiler() {
     const [theme, setTheme] = useState(true)
     let modes = ["c", "python", "cpp", "java", "javascript"]
     let modesImg = [c, python, cpp, java, js]
-    const [mode, setMode] = useState()
 
     //functions for room handling // room related local functions 
     const createNewRoomId = () => {
@@ -113,6 +118,11 @@ function Compiler() {
                 toast.error(e.message)
                 reactNavigator('/')
             }
+
+            socketRef.current.on('admit_request', ({ roomId, username, userprofile, id }) => {
+                setNewRequest(true)
+                setNewUser({ ...newUser, roomId: roomId, username: username, userprofile: userprofile, id: id })
+            })
 
             socketRef.current.on(
                 'joined',
@@ -179,6 +189,16 @@ function Compiler() {
                 </ModalBody>
             </Modal>
 
+            <Modal isOpen={newRequest} toggle={() => setNewRequest(!newRequest)} size='md'>
+                <ModalBody>
+                    {newUser.username}
+                    <button className='ml-5 bg-black' onClick={() => {
+                        socketRef.current.emit('request_admitted', { roomId: newUser.roomId, username: newUser.username, userprofile: newUser.userprofile, id: newUser.id })
+                        setNewRequest(false)
+                    }}>add</button>
+                </ModalBody>
+            </Modal>
+
             <div className='w-full h-[calc(100vh-50px)] flex gap-1'>
                 <div className="left w-[20%] h-full bg-[#eee] flex flex-col items-center">
                     <div className="room-controls flex flex-col items-center gap-3 my-4">
@@ -192,7 +212,7 @@ function Compiler() {
                                         {
                                             usersInRoom.map(member => {
                                                 return (
-                                                    <Avatar alt="Remy Sharp" src={member.userprofile} />
+                                                    <Avatar alt={member.username} src={member.userprofile} />
                                                 )
                                             })
                                         }
@@ -243,10 +263,10 @@ function Compiler() {
                         <label htmlFor="" className='w-full text-center mt-4 font-semibold text-slate-600 text-sm'>Set font size</label>
                         <div className="ctrls flex justify-between w-[60%] mx-auto mt-2 text-slate-600 font-semibold bg-white py-1 px-2 rounded-xl">
                             <button className='text-xl ml-2' onClick={() => {
-                                if (fontsize > 16) {
+                                if (fontsize > 15) {
                                     setSize(fontsize - 2)
                                     return
-                                } setSize(15)
+                                } setSize(14)
                             }}>-</button>
                             {fontsize}
                             <button className='mr-2' onClick={() => {
