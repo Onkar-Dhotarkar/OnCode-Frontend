@@ -141,12 +141,12 @@ export default function Codetable(props) {
                         </div>
                         <div className="myAllCodes w-[82vw] mx-auto">
                             {
-                                dbdata.length === 0 ? <div className='flex flex-col items-center gap-3 text-base font-semibold text-slate-600 w-[100%] shadow-md py-10 rounded-xl'>
+                                dbdata && dbdata.length === 0 ? <div className='flex flex-col items-center gap-3 text-base font-semibold text-slate-600 w-[100%] shadow-md py-10 rounded-xl'>
                                     <img className='w-12 h-12' src={failure} alt="" />
                                     Oops ! No {langDetails} codes added yet, Add by pressing the plus button
                                 </div> :
                                     refresh ? <div className='mt-3 w-[100%] shadow-md py-10 rounded-xl'><Loader title='Refreshing data' /></div> :
-                                        dbdata.map((element) => {
+                                        dbdata && dbdata.map((element) => {
                                             if (element.language === langDetails && !refresh) return (<div key={element.id} className="c1 flex justify-between px-[0.95rem] py-[0.75rem] rounded-xl shadow-md items-center text-slate-600 font-semibold text-base mt-2 hover:bg-slate-50">
                                                 <img className='w-8 h-8 rounded-full' src={element.language === "c" ? c : element.language === "c++" ? cpp : element.language === "java" ? java : element.language === "python" ? py : js} alt="" />
                                                 <span className="name w-36 text-center">{element.codename}</span>

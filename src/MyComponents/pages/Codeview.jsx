@@ -114,7 +114,7 @@ export default function Codeview(props) {
                             </button>
                         </div>
                     </div>
-                    <div className="codedesc flex flex-col gap-2 px-2 py-3 text-sm font-semibold text-slate-500 w-[70vw] mx-auto text-start">
+                    <div className="codedesc flex flex-col gap-2 px-2 py-3 mt-1 text-sm font-semibold text-slate-500 w-[70vw] mx-auto text-start">
                         <span className='text-3xl text-slate-600 tracking-tight font-semibold capitalize flex items-center justify-between'>
                             Description
                         </span>
@@ -122,7 +122,7 @@ export default function Codeview(props) {
                             {code.description ? code.description : 'No description provided'}
                         </span>
                     </div>
-                    <div className='text-3xl font-semibold px-2 mt-3'>Code</div>
+                    <div className='text-3xl font-semibold px-2 mt-[0.65rem]'>Code</div>
                     <div className="codecontent bg-neutral-600 mt-2 w-[70vw] mx-auto relative" style={{ borderRadius: "6.5px" }}>
                         <div className="operations flex justify-end py-2">
                             <div className='flex items-center justify-end mx-4 w-16'>

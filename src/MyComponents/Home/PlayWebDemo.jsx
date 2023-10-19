@@ -231,7 +231,7 @@ buttons.forEach((button) => {
         </div>
       </div>
 
-      <div id className='w-[66%] h-[58vh] rounded-lg mt-2 shadow shadow-slate-300 flex justify-center items-center gap-1'>
+      <div id className='w-[66%] h-96 rounded-lg mt-2 shadow shadow-slate-300 flex justify-center items-center gap-1'>
         {changes ? (
           <Loader title="Saving changes" />
         ) : (

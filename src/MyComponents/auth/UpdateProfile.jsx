@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
 import mail from '../../images/micro/mail.png'
 import heart from '../../images/micro/heart.png'
-import share from '../../images/micro/profshare.png'
+import left_arrow from '../../images/micro/left-arrow.png'
 import friends from '../../images/micro/friends.png'
 import options from '../../images/micro/dots.png'
 import edit from '../../images/micro/edit.png'
@@ -68,7 +68,6 @@ export default function UpdateProfile() {
                 setfetchedcountry(country)
                 setfetchedline(line)
 
-                console.log(!desc + "s");
                 if (skills.length === 0) {
                     setfetchedskills(null)
                 }
@@ -230,8 +229,8 @@ export default function UpdateProfile() {
                                 </div>
                             </div>
                             <div className='flex gap-2 mt-1'>
-                                <button className='text-sm font-semibold text-white background-grad flex justify-center items-center gap-2 px-4 py-2 rounded-md mt-2'>
-                                    <img src={share} className='w-4 h-4' alt="" /> Share profile
+                                <button className='text-sm font-semibold text-white background-grad flex justify-center items-center gap-2 px-4 py-2 rounded-md mt-2' onClick={() => navigate("/")}>
+                                    <img src={left_arrow} className='w-3 h-3' alt="" /> Back to Home
                                 </button>
                                 <button className='text-sm font-semibold text-white bg-gray-300 flex justify-center items-center gap-2 px-4 py-2 rounded-md mt-2'>
                                     <img src={friends} className='w-4 h-4 mt-1' alt="" /> See all friends
@@ -306,7 +305,7 @@ export default function UpdateProfile() {
                         </div>
                         <div className='skills text-sm flex flex-wrap justify-start gap-2 mt-3 '>
                             <div className={`bio text-sm font-semibold text-slate-600 pr-5 ${!fetchedesc ? 'flex flex-col items-center w-full' : ''}`}>
-                                <div className={`${fetchedesc != null ? '' : "ml-7"} text-start w-full`}>
+                                <div className={`${fetchedesc != null ? '' : "ml-2"} text-start w-full`}>
                                     {fetchedesc === null ? <div className='flex justify-start items-center'>Add a short description about you and show your <span><img src={heart} className='w-3 h-3 mx-1 mt-[0.1rem]' alt="" /></span>for coding</div> : fetchedesc ? <div>
                                         {fetchedesc} <br />
                                     </div> : <Loader />}

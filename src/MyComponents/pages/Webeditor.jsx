@@ -3,7 +3,7 @@ import html from '../../images/bgs/html.png'
 import css from '../../images/bgs/css.png'
 import js from '../../images/bgs/js-web.png'
 import moon from '../../images/micro/moon.png'
-import copy from '../../images/micro/copy.png'
+import copy from '../../images/micro/copy-white.png'
 import upload from '../../images/micro/upload.png'
 import right from '../../images/micro/right-arrow.png'
 import sun from '../../images/micro/light.png'
@@ -97,6 +97,7 @@ body{
     })
     const [popup, setPopup] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [loaded, setLoaded] = useState(false)
 
     const handleEditorChange = (value) => {
         if (currentLang === 'html') {
@@ -111,6 +112,10 @@ body{
         setDataToAdd(previous => ({ ...previous, structure: htmlcode, style: csscode, logic: jscode }))
         // console.log(dataToAdd.structure + dataToAdd.styles + dataToAdd.logic);
     }
+
+    useEffect(() => {
+        setLoaded(true)
+    }, [])
 
     useEffect(() => {
         setLoading(true)
@@ -168,8 +173,10 @@ body{
                     </div> : <Loader title="Adding webcode" />}
                 </ModalBody>
             </Modal>
-            {authenticated ? <div div className='flex justify-start gap-2' >
-                <div className='w-[10%]'>
+
+
+            {authenticated ? <div className={`flex justify-start gap-2 fade-slide-in ${loaded ? "loaded" : ""}`}>
+                < div className='w-[10%]'>
 
                     <div className="files w-[100%] text-sm font-bold text-slate-600 bg-gray-100 h-[100vh] flex flex-col gap-1 py-3">
                         <div className='html-file flex items-center gap-1 ml-3 mx-2 p-[0.32rem] rounded-lg cursor-pointer hover:bg-white' onClick={() => {
@@ -199,7 +206,7 @@ body{
                     <div>
 
                     </div>
-                </div>
+                </ div>
                 <div className="code w-[44%] h-[100vh] flex flex-col gap-2">
                     <div className="controls flex  items-center justify-between text-sm mt-2 mx-2">
                         <div className=' flex font-semibold items-center justify-start gap-2'>
@@ -267,7 +274,8 @@ body{
                         />
                     )}
                 </div>
-            </div > : <div className='h-[70vh] flex items-center justify-center'><UserNotFound /></div>}
+            </div > : <div className='h-[70vh] flex items-center justify-center'><UserNotFound /></div>
+            }
         </>
     )
 }

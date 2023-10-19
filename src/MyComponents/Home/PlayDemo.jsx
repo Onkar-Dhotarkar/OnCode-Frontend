@@ -151,7 +151,7 @@ if __name__ == "__main__":
                     </button>
                 </div>
             </div>
-            <div id className='w-[66%] h-[58vh] rounded-lg mt-2 shadow shadow-slate-300'>
+            <div id className='w-[66%] h-96 rounded-lg mt-2 shadow shadow-slate-300'>
                 <AceEditor
                     style={{ width: "calc(100%)", height: "calc(100%)", borderRadius: "6px" }}
                     fontSize={14}
