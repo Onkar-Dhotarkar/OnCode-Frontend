@@ -213,7 +213,9 @@ function Compiler() {
             })
         }
 
-        init()
+        if(authenticated){
+         init()
+        }
         return () => {
             socketRef.current.disconnect();
             socketRef.current.off('joined');
