@@ -24,18 +24,51 @@ import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Runner from '../Popups/Others/Runner'
 import c from '../../images/bgs/c.png'
-import python from '../../images/bgs/python.png'
 import cpp from '../../images/bgs/cpp.png'
 import java from '../../images/bgs/java.png'
+import python from '../../images/bgs/python.png'
 import js from '../../images/bgs/js.png'
+import assembly from '../../images/bgs/assembly.png'
+import clojure from '../../images/bgs/clojure.png'
+import cobol from '../../images/bgs/cobol.png'
+import csharp from '../../images/bgs/c_sharp.png'
+import erlang from '../../images/bgs/erlang.png'
+import dart from '../../images/bgs/dart.png'
+import go from '../../images/bgs/go.png'
+import julia from '../../images/bgs/julia.png'
+import kotlin from '../../images/bgs/kotlin.png'
+import lua from '../../images/bgs/lua.png'
+import php from '../../images/bgs/php.png'
+import rust from '../../images/bgs/rust.png'
+import scala from '../../images/bgs/scala.png'
+import swift from '../../images/bgs/swift.png'
+import typescript from '../../images/bgs/typescript.png'
 
+
+//importing the modes for langs 
 import "ace-builds/src-noconflict/theme-dracula"
 import "ace-builds/src-noconflict/theme-xcode"
-import "ace-builds/src-noconflict/mode-c_cpp"
+import "ace-builds/src-noconflict/mode-assembly_x86"
+import "ace-builds/src-noconflict/mode-clojure"
+import "ace-builds/src-noconflict/mode-cobol"
 import "ace-builds/src-noconflict/mode-csharp"
+import "ace-builds/src-noconflict/mode-c_cpp"
+import "ace-builds/src-noconflict/mode-dart"
+import "ace-builds/src-noconflict/mode-erlang"
+import "ace-builds/src-noconflict/mode-golang"
+import "ace-builds/src-noconflict/mode-julia"
+import "ace-builds/src-noconflict/mode-kotlin"
+import "ace-builds/src-noconflict/mode-lua"
 import "ace-builds/src-noconflict/mode-java"
 import "ace-builds/src-noconflict/mode-javascript"
 import "ace-builds/src-noconflict/mode-python"
+import "ace-builds/src-noconflict/mode-php"
+import "ace-builds/src-noconflict/mode-ruby"
+import "ace-builds/src-noconflict/mode-rust"
+import "ace-builds/src-noconflict/mode-scala"
+import "ace-builds/src-noconflict/mode-swift"
+import "ace-builds/src-noconflict/mode-typescript"
+
 
 import UserNotFound from '../UserNotFound'
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
@@ -65,14 +98,36 @@ function Compiler() {
     const [replace, setReplace] = useState('') //state for to be replace value
     const [fontsize, setSize] = useState(14) //state for fontsize
     const [codeInfo, setcodeInfo] = useState({ //state for handling code and code data
+        codename: localStorage.getItem("cname"),
         code: localStorage.getItem("previousCode") ? localStorage.getItem("previousCode") : "",
         codelang: localStorage.getItem("previousMode") ? localStorage.getItem("previousMode") : "",
         description: ""
     })
     const [exeWindow, setExeWindow] = useState(false)
     const [theme, setTheme] = useState(true)
-    let modes = ["c", "python", "cpp", "java", "javascript"]
-    let modesImg = [c, python, cpp, java, js]
+    let modes = ["assembly", "c", "cpp", "clojure", "cobol", "csharp", "dart", "erlang", "go", "java", "javascript", "julia", "kotlin", "lua", "php", "python", "rust", "scala", "swift", "typescript"]
+    const image_lang_map = {
+        "assembly": assembly,
+        "c": c,
+        "cpp": cpp,
+        "clojure": clojure,
+        "cobol": cobol,
+        "csharp": csharp,
+        "dart": dart,
+        "erlang": erlang,
+        "go": go,
+        "java": java,
+        "javascript": js,
+        "julia": julia,
+        "kotlin": kotlin,
+        "lua": lua,
+        "php": php,
+        "python": python,
+        "rust": rust,
+        "scala": scala,
+        "swift": swift,
+        "typescript": typescript
+    }
     const [loaded, setLoaded] = useState(false)
     const [loadWelcome, setLoadWelcome] = useState(false)
     const [savePopup, setsavePopup] = useState(false)
@@ -141,7 +196,7 @@ function Compiler() {
             codes: arrayUnion({
                 codename: localStorage.getItem("cname"),
                 currentcode: codeInfo.code,
-                date: new Date().toLocaleDateString(),
+                date: new Date().toDateString(),
                 description: codeInfo.description,
                 language: codeInfo.codelang === "cpp" ? "c++" : codeInfo.codelang
             })
@@ -164,7 +219,7 @@ function Compiler() {
 
             const handleErrors = (e) => {
                 toast.error(e.message)
-                reactNavigator('/')
+                // reactNavigator('/')
             }
 
             socketRef.current.on(
@@ -213,13 +268,11 @@ function Compiler() {
             })
         }
 
-        if(authenticated){
-         init()
-        }
+        // init()
         return () => {
-            socketRef.current.disconnect();
-            socketRef.current.off('joined');
-            socketRef.current.off('disconnected');
+            // socketRef.current.disconnect();
+            // socketRef.current.off('joined');
+            // socketRef.current.off('disconnected');
         }
     }, [reactNavigator, user.username, authenticated])
 
@@ -239,7 +292,7 @@ function Compiler() {
 
             <Modal isOpen={exeWindow} toggle={() => setExeWindow(!exeWindow)} size='lg'>
                 <ModalBody>
-                    <Runner code={codeInfo.code} clanguage={codeInfo.codelang} />
+                    <Runner cname={codeInfo.codename} code={codeInfo.code} clanguage={codeInfo.codelang} />
                 </ModalBody>
             </Modal>
 
@@ -356,7 +409,7 @@ function Compiler() {
                                 })
                             }
                         </div>
-                        <div className='absolute flex bottom-0 justify-center items-center gap-[2px] py-3 w-full text-sm text-slate-600 backdrop-blur-xl rounded-md'>
+                        <div className='absolute flex bottom-0 justify-center items-center gap-[2px]z py-3 w-full text-sm text-slate-600 backdrop-blur-xl rounded-md'>
                             <input id='input_msg' type="text" placeholder="Message" className="w-[80%] form-shadow px-2 py-2 rounded-md" onChange={(e) => {
                                 setMsg(e.target.value)
                             }} />
@@ -477,10 +530,20 @@ function Compiler() {
                         </div>
                         <div className="right w-[80%] relative">
                             <div className='other-controls flex items-center gap-3 absolute top-5 right-5 z-10'>
-                                <input type="text" placeholder='Codename' className='text-sm font-semibold px-3 rounded-sm outline-none text-slate-600 py-[0.15rem] border-none form-shadow' onChange={(e) => {
+                                <input id='codename-input' type="text" value={codeInfo.codename} placeholder='Codename' className={`${!theme ? "text-slate-600" : "text-slate-100"} text-sm font-semibold px-3 rounded-xl bg-transparent border border-slate-100 outline-none py-1 border-none form-shadow`} onChange={(e) => {
+                                    setcodeInfo(prev => ({ ...prev, codename: e.target.value }))
                                     localStorage.setItem("cname", e.target.value)
+                                    if (!codeInfo.codename) {
+                                        toast.error("Mention the codename")
+                                    }
                                 }} />
-                                <button className='w-3 h-3' onClick={() => setExeWindow(true)}>
+                                <button className='w-3 h-3' onClick={() => {
+                                    if (!codeInfo.codename) {
+                                        toast.error("Mention the codename")
+                                        return
+                                    }
+                                    setExeWindow(true)
+                                }}>
                                     <img src={theme ? play : play_dark} alt="" />
                                 </button>
                                 <button className='w-4 h-4' onClick={() => setTheme(!theme)}>
@@ -493,27 +556,40 @@ function Compiler() {
                                 </button>
                                 <button className='flex justify-center items-center gap-2 bg-[#fb6976] text-white font-semibold text-sm px-3 py-1 rounded-md capitalize w-24' onClick={() => {
                                     document.getElementById('selectLang').classList.toggle('loaded')
+                                    document.getElementById('selectLang').classList.toggle('pointer-events-none')
                                 }}>
                                     {(codeInfo.codelang && codeInfo.codelang) || "Set mode"}
                                 </button>
                             </div>
-                            <div id='selectLang' className="langs absolute top-12 px-3 py-3 rounded-md right-5 z-10 bg-white fade-slide-in form-shadow">
-                                {
-                                    modes.map((mode, i) => {
-                                        return (
-                                            <div className='my-2 hover:bg-gray-100 text-slate-600 font-semibold text-sm rounded-md' ><button className='flex justify-center items-center gap-2 capitalize p-1' onClick={() => {
-                                                setcodeInfo(prev => ({ ...prev, codelang: mode }))
-                                                document.getElementById('selectLang').classList.toggle('loaded')
-                                                toast.success("Switched mode")
-                                                localStorage.setItem("previousMode", mode)
-                                            }}><img src={modesImg[i]} className='w-7 h-7' alt="" />{mode}</button></div>
-                                        )
-                                    })
-                                }
+                            <div id='selectLang' className="langs absolute top-12 p-5 rounded-md right-5 z-10 bg-white fade-slide-in pointer-events-none form-shadow w-[30rem] mt-2">
+                                <div className="head font-bold text-2xl text-slate-600 text-center">
+                                    Languages of your choice 😊
+                                </div>
+                                <div className='flex flex-wrap justify-center items-center gap-2 mt-4'>
+                                    {
+                                        modes.map((mode) => {
+                                            return (
+                                                <button className='flex justify-center py-2 w-28 items-center gap-2 capitalize  border border-slate-100 text-sm font-semibold hover:bg-[#eee] text-center text-slate-600 rounded-2xl' onClick={() => {
+                                                    setcodeInfo(prev => ({ ...prev, codelang: mode }))
+                                                    document.getElementById('selectLang').classList.toggle('pointer-events-none')
+                                                    document.getElementById('selectLang').classList.toggle('loaded')
+                                                    toast.success("Switched mode")
+                                                    localStorage.setItem("previousMode", mode)
+                                                }}>
+                                                    <img className='w-4' src={image_lang_map[mode]} alt="" />
+                                                    {mode}
+                                                </button>
+                                            )
+                                        })
+                                    }
+                                </div>
+
                             </div>
                             <AceEditor
-                                placeholder="Coding, Once in Never out"
-                                mode={codeInfo.codelang === "c" || codeInfo.codelang === "cpp" ? "c_cpp" : codeInfo.codelang}
+                                className='scrollbar scrollbar-thumb-[#fb6976]'
+                                placeholder="This is our sharable codespace for coders, we ensure proper coding functionalities along with secure code execution environment, hoping you will respect the security and privacy policies"
+                                mode={codeInfo.codelang === "c" || codeInfo.codelang === "cpp" ? "c_cpp" :
+                                    codeInfo.codelang === "go" ? "golang" : codeInfo.codelang}
                                 theme={!theme ? 'xcode' : 'dracula'}
                                 name="blah2"
                                 fontSize={fontsize}
@@ -522,6 +598,7 @@ function Compiler() {
                                 highlightActiveLine={true}
                                 value={codeInfo.code}
                                 style={{ height: "calc(100%)", width: "calc(100%)" }}
+                                wrapEnabled={true}
                                 setOptions={{
                                     useWorker: false,
                                     enableBasicAutocompletion: true,
@@ -529,8 +606,14 @@ function Compiler() {
                                     enableSnippets: true,
                                     showLineNumbers: true,
                                     tabSize: 2,
+                                    wrap: true
                                 }}
-                                onChange={handleEditorChange} />
+                                onChange={handleEditorChange}
+                                onPaste={(value) => {
+                                    setcodeInfo(prev => ({ ...prev, code: value }))
+                                    localStorage.setItem("previousCode", value)
+                                }}
+                            />
                         </div>
                     </div >
                 </div> : <div className='w-full h-[70vh] flex justify-center items-center'><UserNotFound /></div>

@@ -8,7 +8,7 @@ import toast from 'react-hot-toast'
 import { auth, db } from '../Firebase/Firebase'
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth'
 import { Link, useNavigate } from 'react-router-dom'
-import { collection, doc, setDoc } from 'firebase/firestore'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 
 export default function SignUp() {
     const [loaded, setLoaded] = useState(false)
@@ -57,6 +57,7 @@ export default function SignUp() {
 
     async function createUserDbStructure() {
         let collectionRef = collection(db, auth.currentUser.uid)
+        let userRef = collection(db, "users_id")
         let docsToAddonSignup = [{
             username: signupState.firstname + " " + signupState.lastname,
             email: signupState.email,
@@ -71,7 +72,7 @@ export default function SignUp() {
             codes: [{
                 dummy: true
             }]
-        }, {
+            ,
             webpages: [{
                 dummy: true
             }]
@@ -84,6 +85,13 @@ export default function SignUp() {
             setDoc(docRef, document)
             i += 1
         })
+
+        //creating entry into the users collection for iterating later
+        const userDocRef = doc(userRef, auth.currentUser.uid)
+        setDoc(userDocRef, {
+            username: signupState.firstname + " " + signupState.lastname,
+            uid: auth.currentUser.uid
+        })
     }
 
     async function createUserAccount() {
@@ -91,9 +99,9 @@ export default function SignUp() {
             try {
                 setCreating(true)
                 await createUserWithEmailAndPassword(auth, signupState.email, signupState.password)
-                sendEmailVerification(auth.currentUser).then(() => {
-                    toast.success("Email verified")
-                    updateProfile(auth.currentUser, {
+                sendEmailVerification(auth.currentUser).then(async () => {
+                    toast.success("Email validated")
+                    await updateProfile(auth.currentUser, {
                         displayName: signupState.firstname + " " + signupState.lastname
                     })
                 })
@@ -197,4 +205,3 @@ export default function SignUp() {
         </div>
     )
 }
-

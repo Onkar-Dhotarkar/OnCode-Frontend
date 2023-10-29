@@ -119,11 +119,8 @@ export default function UpdateProfile() {
     return (
         <>
             <Modal isOpen={logout} toggle={() => setLogout(!logout)}>
-                <ModalHeader className='text-slate-600' toggle={() => setLogout(!logout)}>
-                    Logout from current account
-                </ModalHeader>
-                <ModalBody className="flex items-center">
-                    <PopMessage src={log} main="Logout For Now" description="After logging out, you will not be able to access any of our coding facilities" content="Log out" clickFunction={signOutFromCurrentAccount} />
+                <ModalBody className="flex items-center p-5">
+                    <PopMessage src={log} main="Logout For Now 🥺" description="After logging out, you will not be able to access any of our coding facilitie s, still want to continue logging out?" content="Log out" clickFunction={signOutFromCurrentAccount} />
                 </ModalBody>
             </Modal>
 
@@ -143,11 +140,8 @@ export default function UpdateProfile() {
                 toggle={() => {
                     setProfile_popup(!profile_popup)
                 }} >
-                <ModalHeader toggle={() => {
-                    setProfile_popup(!profile_popup)
-                }} className='text-gray-500 capitalize font-semibold'>{setting_profile ? 'Setting profile picture' : 'Continue setting profile'}</ModalHeader>
-                <ModalBody className='flex justify-center items-center min-h-[50vh]'>{setting_profile ? <Loader title="Setting profile picture" /> : <PopMessage
-                    src={profimg} main="Set Profile Picture" sub="Persolize your profile with a picture" description={`Hey ${user.username}, hit the button to set the profile image of yours`} content="Set Profile" clickFunction={setProfilePicture} />}
+                <ModalBody className='flex justify-center items-center min-h-[50vh] p-5'>{setting_profile ? <Loader title="Setting profile picture" /> : <PopMessage
+                    src={profimg} main="Set Profile Picture ➡️" description={`Hey ${user.username.split(" ")[0]} 🚀 Hit that button to set your profile image and get the vibe of a personalized user profile.Let the journey of personalization begin! 📸✨`} content="Set Profile" clickFunction={setProfilePicture} />}
                 </ModalBody>
             </Modal>
 

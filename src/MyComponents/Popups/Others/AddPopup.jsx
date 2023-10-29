@@ -9,7 +9,7 @@ import { useContext } from 'react'
 import { AuthContext } from '../../contexts/AuthContext'
 import { LangContext } from '../../contexts/LangContext'
 import toast from 'react-hot-toast'
-import { Editor } from '@monaco-editor/react'
+import AceEditor from 'react-ace'
 
 export default function AddPopup(props) {
     const [added, setAdded] = useState(true)
@@ -65,10 +65,12 @@ export default function AddPopup(props) {
     return (
         <>
             {added ? <div div className='w-[100%] mx-auto rounded-xl' >
-                <div className="main text-2xl font-bold text-slate-600 mx-auto justify-center gap-7 flex py-3 items-center">
-                    <img className='w-12 h-12 rounded-full object-cover' src={auth.currentUser ? auth.currentUser.photoURL : profile} alt="" />
+                <div className="main text-2xl font-bold text-slate-600 mx-auto justify-center gap-2 flex py-3 items-center">
+                    <div className='w-12 h-12 rounded-full border-2 border-[#fb6976] p-[2px]'>
+                        <img className='w-full h-full rounded-full object-cover' src={auth.currentUser ? auth.currentUser.photoURL : profile} alt="" />
+                    </div>
                     <span>
-                        Code more and preserve your codes forever
+                        Add a new code to your collection
                     </span>
 
                 </div>
@@ -80,18 +82,30 @@ export default function AddPopup(props) {
                     <input type="text" id="description" placeholder='Description' className='mt-1 mx-auto w-[85%] rounded-md  shadow-sm text-slate-500 text-sm py-2 px-2' onChange={(event) => {
                         setDataToAdd(previous => ({ ...previous, description: event.target.value }))
                     }} />
-                    <div className='relative overflow-hidden w-[85%] bg-[#1e1e1e] h-[30vh] mx-auto rounded-lg'>
-                        <Editor
-                            className={'shadow shadow-slate-200 py-3 border border-slate-100'}
-                            onChange={handleEditorChange}
-                            language={dataToAdd.language}
-                            theme='vs-dark'
-                        />
-                        <div id="custom-scrollbar" className="custom-scrollbar w-[6px] opacity-60 h-[95%] absolute right-4 my-2 top-0 bg-white rounded-xl transition-all resize-none overflow-auto"></div>
-                    </div>
+                    <AceEditor
+                        placeholder="Add a new code,either write or paste it"
+                        mode={dataToAdd.language === 'c' || dataToAdd.language === 'c++' ? 'c_cpp' : dataToAdd.language}
+                        theme={'dracula'}
+                        fontSize={15}
+                        showPrintMargin={true}
+                        showGutter={true}
+                        highlightActiveLine={true}
+                        value={dataToAdd.currentcode}
+                        style={{ height: 200, width: "calc(85%)", margin: "auto", borderRadius: 5 }}
+                        className='form-shadow'
+                        wrapEnabled={true}
+                        setOptions={{
+                            useWorker: false,
+                            enableBasicAutocompletion: true,
+                            enableLiveAutocompletion: true,
+                            enableSnippets: true,
+                            showLineNumbers: true,
+                            tabSize: 2,
+                        }}
+                        onChange={handleEditorChange} />
                 </div>
                 <div className='flex justify-center'>
-                    <button id='append-btn' className='w-40 background-grad text-white text-sm font-semibold rounded-md py-2 px-3' onClick={() => {
+                    <button id='append-btn' className=' bg-[#fb6976] text-white text-sm font-semibold rounded-md py-2 px-3 my-4' onClick={() => {
                         if (!dataToAdd.codename || !dataToAdd.currentcode) {
                             return
                         }
@@ -111,7 +125,7 @@ export default function AddPopup(props) {
                             })
                         }
                     }}>
-                        Append +
+                        Add code to collection
                     </button>
                 </div>
             </div > : <div className='flex justify-center items-center h-[75vh]'><Loader title="Adding your code" /></div>}

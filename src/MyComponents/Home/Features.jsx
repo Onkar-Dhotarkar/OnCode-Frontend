@@ -5,8 +5,9 @@ import profile from '../../images/micro/user.png'
 export default function Features() {
     const { user } = useContext(AuthContext)
     return (
-        <div className='mb-5 mt-5'>
-            <div className='flex justify-center gap-2'>
+        <div className='p-5'>
+            <div className="carousel-title text-3xl text-center font-bold  text-slate-600">Experience many rich features➡️</div>
+            <div className='flex justify-center gap-2 mt-5'>
                 <div className="left flex flex-col gap-2 w-2/5">
                     <div className="container bg-gray-100 text-slate-600 px-4 py-3 rounded-md shadow shadow-slate-200">
                         <div className="heading flex items-center gap-3 ">

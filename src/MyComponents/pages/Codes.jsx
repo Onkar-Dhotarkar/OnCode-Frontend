@@ -1,15 +1,33 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import add from '../../images/micro/plus.png'
 import refresh_img from '../../images/micro/refresh.png'
-import del from '../../images/micro/delete.png'
+import not from '../../images/micro/not_found.png'
+import del from '../../images/micro/delete_white.png'
+import eye from '../../images/micro/eye_white.png'
 import c from '../../images/bgs/c.png'
 import cpp from '../../images/bgs/cpp.png'
 import java from '../../images/bgs/java.png'
-import py from '../../images/bgs/python.png'
+import python from '../../images/bgs/python.png'
 import js from '../../images/bgs/js.png'
-import view from '../../images/micro/view.png'
-import failure from '../../images/micro/failure.png'
-import { Modal, ModalHeader, ModalBody } from 'reactstrap'
+import assembly from '../../images/bgs/assembly.png'
+import clojure from '../../images/bgs/clojure.png'
+import cobol from '../../images/bgs/cobol.png'
+import csharp from '../../images/bgs/c_sharp.png'
+import erlang from '../../images/bgs/erlang.png'
+import dart from '../../images/bgs/dart.png'
+import go from '../../images/bgs/go.png'
+import julia from '../../images/bgs/julia.png'
+import kotlin from '../../images/bgs/kotlin.png'
+import lua from '../../images/bgs/lua.png'
+import php from '../../images/bgs/php.png'
+import rust from '../../images/bgs/rust.png'
+import scala from '../../images/bgs/scala.png'
+import swift from '../../images/bgs/swift.png'
+import typescript from '../../images/bgs/typescript.png'
+
+
+import options from '../../images/micro/options.png'
+import { Modal, ModalBody } from 'reactstrap'
 import AddPopup from '../Popups/Others/AddPopup'
 import { getDoc, doc, updateDoc, arrayRemove } from 'firebase/firestore'
 import Loader from '../Popups/Others/Loader'
@@ -21,7 +39,6 @@ import { LangContext } from '../contexts/LangContext'
 import UserNotFound from '../UserNotFound'
 import { CodeContext } from '../contexts/CodeContext'
 import { useNavigate } from 'react-router-dom'
-import PopMessage from '../Popups/Others/PopMessage'
 import toast from 'react-hot-toast'
 
 export default function Codetable(props) {
@@ -34,24 +51,52 @@ export default function Codetable(props) {
     const { authenticated, user, setauthLoad } = useContext(AuthContext)
     const { viewid, setviewid } = useContext(CodeContext)
     const { langDetails, setlangDetails } = useContext(LangContext)
+    const [filter, setFilter] = useState(false)
+    const [category, isCategory] = useState(false)
     const navigate = useNavigate("")
 
-    async function refreshData() {
+    const image_lang_map = {
+        "assembly": assembly,
+        "c": c,
+        "cpp": cpp,
+        "clojure": clojure,
+        "cobol": cobol,
+        "csharp": csharp,
+        "dart": dart,
+        "erlang": erlang,
+        "go": go,
+        "java": java,
+        "javascript": js,
+        "julia": julia,
+        "kotlin": kotlin,
+        "lua": lua,
+        "php": php,
+        "python": python,
+        "rust": rust,
+        "scala": scala,
+        "swift": swift,
+        "typescript": typescript
+    }
+
+    const refreshData = async () => {
         setRefresh(true)
         setauthLoad(30)
         const docRef = doc(db, user.useruid, user.useruid + "_usercodes")
         await getDoc(docRef).then((doc) => {
-            setdbdata(doc.data().codes)
+            try {
+                setdbdata(doc.data().codes)
+            } catch (e) {
+                toast.error(e.message)
+            }
             setRefresh(false)
             setauthLoad(100)
         })
     }
 
-    async function deleteCode() {
+    const deleteCode = async () => {
         setauthLoad(30)
         isdeleting(true)
         try {
-            console.log(viewid.name + viewid.lang)
             const totalDocs = (await getDoc(doc(db, user.useruid, user.useruid + "_usercodes"))).data().codes
             Array.from(totalDocs).forEach(async (document) => {
                 if (document.codename === viewid.name && document.language === viewid.lang) {
@@ -71,112 +116,175 @@ export default function Codetable(props) {
         setauthLoad(100)
     }
 
-    function setLanguage(lang) {
+    const setLanguage = (lang) => {
         setlangDetails(lang)
         refreshData()
     }
 
-    function viewcode() {
+    const viewcode = () => {
         navigate('/codeview')
     }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setRefresh(true)
+            setauthLoad(30)
+            const docRef = doc(db, user.useruid, user.useruid + "_usercodes")
+            await getDoc(docRef).then((doc) => {
+                try {
+                    setdbdata(doc.data().codes)
+                } catch (e) {
+                    toast.error(e.message)
+                }
+                setRefresh(false)
+                setauthLoad(100)
+            })
+            isCategory(false)
+            dbdata.forEach((code) => {
+                if (code.language === langDetails) {
+                    isCategory(true)
+                }
+            })
+        }
+        fetchData()
+    }, [setauthLoad, setdbdata, user.useruid, langDetails])
 
     return (
         <>
             <Modal isOpen={modal} toggle={() => { setModal(!modal) }} size={addordelete === 'add' ? 'lg' : 'md'}>
-                <ModalHeader className='text-gray-600' toggle={() => { setModal(!modal) }}>{addordelete === 'add' ? `Append a new ${langDetails} code to your collection` : 'Do you want to proceed deletion ?'}</ModalHeader>
-                <ModalBody className='flex justify-center items-center'>{addordelete === 'add' ? <AddPopup language={langDetails} /> : deleting ? <div className='h-[49vh] flex justify-center items-center'><Loader title={"Deleting code " + viewid.name} /> </div> : <PopMessage src={failure} content="Delete Code" clickFunction={deleteCode} main='Delete Code' sub="Sure, then hit the delete button" description='The code will be removed and will not be further accessible' />}</ModalBody>
+                <ModalBody className='flex justify-center items-center'>{addordelete === 'add' ? <AddPopup language={langDetails} /> : deleting ? <div className='h-[49vh] flex justify-center items-center'><Loader title={"Deleting code " + viewid.name} /> </div> : <div className='text-center px-5 py-4'>
+                    <div className="heading text-2xl text-slate-600 font-semibold">
+                        Are you sure to delete the code ❓
+                    </div>
+                    <div className='text-sm text-slate-600 mt-3'>
+                        Deleting the code will remove 🥺 it from your code collection, you will not be able to access or edit it anymore, click delete if you want to proceed the deletion.
+                    </div>
+                    <div className='flex gap-3 justify-center'>
+                        <button className='bg-[#fb6976] text-sm font-semibold px-4 py-2 rounded-md mt-4 text-white' onClick={deleteCode}>
+                            Delete Code
+                        </button>
+                        <button className='bg-gray-300 text-sm font-semibold px-3 py-2 rounded-md mt-4 text-white' onClick={() => {
+                            setModal(false)
+                        }}>
+                            Cancel Deletion
+                        </button>
+                    </div>
+
+                </div>}</ModalBody>
             </Modal>
 
-            <div className='flex mx-auto gap-2 justify-between items-start'>
-                <div className="sidebar text-md font-semibold capitalize text-slate-600 min-h-[100vh] shadow shadow-slate-100 px-[0.95rem]">
-                    <div onClick={() => {
-                        setLanguage('c')
-                    }} className="lang cursor-pointer my-8 px-[0.95rem] py-3 rounded-md border-b border-slate-200 flex gap-2 items-center hover:bg-gray-100">
-                        <img className='w-7 h-7 rounded-full' src={c} alt="" />c
-                    </div>
-
-                    <div onClick={() => {
-                        setLanguage('c++')
-                    }} className="lang cursor-pointer my-8 px-[0.95rem] py-3 rounded-md border-b border-slate-200 flex gap-2 items-center hover:bg-gray-100">
-                        <img className='w-6 h-6 rounded-full' src={cpp} alt="" /> c++
-                    </div>
-
-                    <div onClick={() => {
-                        setLanguage('java')
-                    }} className="lang cursor-pointer my-8 px-[0.95rem] py-3 rounded-md border-b border-slate-200 flex gap-2 items-center hover:bg-gray-100">
-                        <img className='w-6 h-6 rounded-full' src={java} alt="" /> java
-                    </div>
-
-                    <div onClick={() => {
-                        setLanguage('python')
-                    }} className="lang cursor-pointer my-8 px-[0.95rem] py-3 rounded-md border-b border-slate-200 flex gap-2 items-center hover:bg-gray-100">
-                        <img className='w-6 h-6 rounded-full' src={py} alt="" /> python
-                    </div>
-
-                    <div onClick={() => {
-                        setLanguage('javascript')
-                    }} className="lang  cursor-pointermy-8 px-[0.95rem] py-3 rounded-md border-b border-slate-200 flex gap-2 items-center hover:bg-gray-100">
-                        <img className='w-6 h-6 rounded-full' src={js} alt="" /> javascript
+            {authenticated ? <div className="main-wrapper">
+                <div className="head mt-2 px-5">
+                    <div className="heading text-3xl font-bold tracking-tight text-slate-700 flex justify-start items-center gap-4">
+                        🚀 Codes
+                        <div className='flex justify-start items-center gap-2 mt-2 text-white text-sm font-semibold'>
+                            <button className='px-4 py-2 rounded-md flex justify-center items-center gap-1 bg-[#fb6976]' onClick={() => {
+                                setaddordelete('add')
+                                setModal(true)
+                            }}>New
+                                <img src={add} className='w-5 h-5' alt="" />
+                            </button>
+                            <button className='px-3 py-2 rounded-md flex justify-center items-center gap-1 bg-gray-300' onClick={refreshData}>Refresh
+                                <img src={refresh_img} className='w-5 h-5' alt="" />
+                            </button>
+                        </div>
                     </div>
                 </div>
+                <div className="codeTable">
+                    <div className="tablehead text-sm text-slate-600 flex justify-between items-center gap-2 px-5 mt-3">
+                        <input type="text" className='w-[30%] px-3 ml-1 py-2 rounded-md shadow-sm border-slate-200' placeholder='Search for your codes 🫡' />
 
-                {authenticated ?
-                    <div className='mx-auto'>
-                        <div className="topbar flex justify-between w-[82vw] items-center px-[0.95rem] py-4 mx-auto shadow-md rounded-2xl bg-gray-100 mt-3 capitalize">
-                            <div className='flex text-base text-slate-600 font-semibold tracking-tight justify-center items-center gap-3 '>
-                                <img className='w-11 h-11 object-cover rounded-full p-1' src={user.userprofile} alt="" />
-                                Hey {user.username.split(" ")[0]}! get your {langDetails} codes at one glance...
-                            </div>
-                            <div className="btns flex gap-4">
-                                <button className="getpopup" onClick={() => {
-                                    setaddordelete('add')
-                                    setModal(true)
-                                }}>
-                                    <img src={add} className='w-6 h-6' alt="" />
-                                </button>
-                                <button className="refresh" onClick={refreshData}>
-                                    <img src={refresh_img} className='w-6 h-6 p-[0.12rem] bg-[#fb6976] rounded-full' alt="" />
-                                </button>
-                            </div>
+                        <button className='border border-slate-200 w-32 px-3 py-2 rounded-2xl flex justify-center items-center gap-2' onClick={() => {
+                            setFilter(!filter)
+                        }}>
+                            {!langDetails && <img src={options} className='h-5' alt="" />}
+                            {langDetails ? <div className='flex justify-center items-center gap-2'>
+                                <img src={image_lang_map[langDetails]} className='w-4' alt="" />
+                                {langDetails}
+                            </div> : "Filters"}
+                        </button>
+                    </div>
+                    <div className={`fade-slide-in absolute right-12 w-[28rem] flex-wrap ${filter ? "loaded" : "pointer-events-none"} bg-white form-shadow rounded-md p-4 flex justify-center items-center gap-2 text-sm font-semibold text-slate-600`}>
+                        <div className="head-filter text-2xl text-center mb-3">
+                            View language specific codes 😗
                         </div>
-                        <div className="myAllCodes w-[82vw] mx-auto">
-                            {
-                                dbdata && dbdata.length === 0 ? <div className='flex flex-col items-center gap-3 text-base font-semibold text-slate-600 w-[100%] shadow-md py-10 rounded-xl'>
-                                    <img className='w-12 h-12' src={failure} alt="" />
-                                    Oops ! No {langDetails} codes added yet, Add by pressing the plus button
-                                </div> :
-                                    refresh ? <div className='mt-3 w-[100%] shadow-md py-10 rounded-xl'><Loader title='Refreshing data' /></div> :
-                                        dbdata && dbdata.map((element) => {
-                                            if (element.language === langDetails && !refresh) return (<div key={element.id} className="c1 flex justify-between px-[0.95rem] py-[0.75rem] rounded-xl shadow-md items-center text-slate-600 font-semibold text-base mt-2 hover:bg-slate-50">
-                                                <img className='w-8 h-8 rounded-full' src={element.language === "c" ? c : element.language === "c++" ? cpp : element.language === "java" ? java : element.language === "python" ? py : js} alt="" />
-                                                <span className="name w-36 text-center">{element.codename}</span>
-                                                <span className="cr-date w- text-center">{element.date}</span>
-                                                <span className="action flex flex-wrap gap-4">
-                                                    <img className='w-5 h-5 cursor-pointer' src={del} alt="" onClick={() => {
-                                                        setviewid({
-                                                            name: element.codename,
-                                                            lang: element.language
-                                                        })
-                                                        setaddordelete('del')
-                                                        setModal(true)
-                                                    }
-                                                    } />
-                                                    <img className='w-6 h-6 cursor-pointer' onClick={() => {
-                                                        setviewid({
-                                                            name: element.codename,
-                                                            lang: element.language
-                                                        })
-                                                        viewcode()
-                                                    }} src={view} alt="" />
-                                                </span>
+                        {
+                            Object.keys(image_lang_map).map((key, i) => {
+                                return (
+                                    <div className='px-4 py-2 rounded-xl border border-slate-200 flex justify-center items-center gap-2' key={i} onClick={() => {
+                                        setLanguage(key)
+                                        setFilter(false)
+                                    }}>
+                                        <img className="w-4" src={image_lang_map[key]} alt="" />
+                                        {key}
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+
+                    <div className="head-row bg-[#eee] rounded-md flex justify-between px-3 items-center text-slate-600 text-sm font-semibold py-2 w-[92.5%] mx-auto mt-3 ">
+                        <div className='w-1/4 text-center' >Name</div>
+                        <div className='w-1/4 text-center'>Language</div>
+                        <div className='w-1/4 text-center'>Date</div>
+                        <div className='w-1/4 text-center'>Actions</div>
+                    </div>
+
+                    {
+                        !category && !refresh && <div className='text-2xl text-slate-600 font-bold tracking-tight w-full flex flex-col justify-center items-center h-60'>
+                            <div><img src={not} className='mb-3 drop-shadow-xl' alt="" /></div>
+                            {langDetails ? <div className='flex justify-center items-center gap-2'>
+                                Add <span className='capitalize'> {langDetails} </span> langugage Codes to access them 😖
+                            </div> : "Add a langauge filter 🖖"}
+                        </div>
+                    }
+                    <div id='main-content-of-table' className="main-content-of-table w-[92%] mx-auto text-sm text-slate-600 font-semibold form-shadow">
+                        {!refresh ?
+                            <div>
+                                {dbdata.map((code, i) => {
+                                    return (
+                                        code.language === langDetails && <div className={`user-code-wrapper flex items-center justify-between py-2 ${i % 2 === 0 ? 'bg-[#eee]' : "bg-white"}`}>
+                                            <div className="codename w-1/4 text-center ml-2">{code.codename}</div>
+                                            <div className="language text-center w-1/4 flex justify-center items-center gap-2 capitalize">
+                                                <img src={image_lang_map[code.language]} className='w-5' alt="" />
+                                                {code.language}</div>
+                                            <div className="date w-1/4 text-center">{code.date}</div>
+                                            <div className="actions text-white font-semibold flex justify-center items-center gap-2 text-sm w-1/4 text-center mr-2">
+                                                <button className='bg-[#fb6976] p-2 rounded-full flex justify-center items-center gap-1' onClick={() => {
+                                                    setviewid({
+                                                        name: code.codename,
+                                                        lang: code.language
+                                                    })
+                                                    setaddordelete('del')
+                                                    setModal(true)
+                                                }}>
+                                                    <img src={del} className='w-3 h-3' alt="" />
+                                                </button>
+                                                <button className='bg-gray-300 p-2 rounded-full flex justify-center items-center gap-1' onClick={() => {
+                                                    setviewid({
+                                                        name: code.codename,
+                                                        lang: code.language
+                                                    })
+                                                    viewcode()
+                                                }}>
+                                                    <img src={eye} className='w-3 h-3' alt="" />
+                                                </button>
                                             </div>
-                                            ); return null
-                                        })
+                                        </div>
+                                    )
+                                })}
 
-                            }
-                        </div>
-                    </div > : <div className='h-[70vh] flex justify-center items-center mx-auto'><UserNotFound /></div>}
-            </div>
+                            </div>
+                            :
+                            <div className='h-60 flex justify-center items-center'>
+                                <Loader title={"Refreshing"} />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div> : <div className='h-[70vh] flex justify-center items-center'>
+                <UserNotFound />
+            </div>}
         </>
     )
 }

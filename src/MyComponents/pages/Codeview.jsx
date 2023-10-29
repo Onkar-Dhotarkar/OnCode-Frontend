@@ -141,8 +141,8 @@ export default function Codeview(props) {
                             </SyntaxHighlighter>
                         </div>
                     </div >
-                    <label className='text-slate-600 font-semibold text-sm px-1'>
-                        Code added on {code.date}
+                    <label className='text-slate-600 font-semibold text-sm px-1 my-2'>
+                        Code added with ❤️ on {code.date}
                     </label>
 
                 </div> : <div className='h-[70vh] flex items-center'>

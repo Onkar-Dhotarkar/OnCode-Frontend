@@ -55,11 +55,8 @@ export default function Banner() {
                 toggle={() => {
                     setModal(!modal)
                 }} >
-                <ModalHeader toggle={() => {
-                    setModal(!modal)
-                }} className='text-gray-500 capitalize font-semibold'>{settingbanner ? 'Setting profile banner' : 'Continue setting banner'}</ModalHeader>
-                <ModalBody className='flex justify-center items-center min-h-[50vh]'>{settingbanner ? <Loader title="Setting profile banner" /> : <PopMessage
-                    src={banner_img} main="Set Profile Banner" sub="Persolize your profile with a banner" description={`Hey ${user.username}, hit the button to set the banner image for your profile`} content="Set Banner" clickFunction={setBanner} />}
+                <ModalBody className='flex justify-center items-center min-h-[50vh] p-5'>{settingbanner ? <Loader title="Setting profile banner" /> : <PopMessage
+                    src={banner_img} main="Set Profile Banner" description={`Hey ${user.username}🚀Hit that button to set the banner image and make your profile stand out! 🌟 Let the creativity flow and showcase your style with a personalized touch. 🎨📸`} content="Set Banner" clickFunction={setBanner} />}
                 </ModalBody>
             </Modal>
 

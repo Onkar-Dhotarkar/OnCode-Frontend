@@ -52,8 +52,7 @@ export default function LandingPage(props) {
                     </div>
                 </div>
 
-                <div className='homebottom  min-w-[100vw] mt-5 bg-gray-100 px-3 py-4 '>
-                    <div className="carousel-title text-3xl text-center font-semibold mt-4 text-slate-700">Elevate your Coding Experience</div>
+                <div className='min-w-[100vw] mt-5 bg-gray-100 px-3 py-4 '>
                     <Features />
                 </div>
 
