@@ -1,9 +1,7 @@
-import codes from '../../images/bgs/js.png'
+import codes from '../../images/micro/figma_1.png'
 import snip from '../../images/bgs/cmd.png'
 import success from '../../images/micro/success.png'
 import right from '../../images/micro/right-arrow.png'
-import a3 from '../../images/bgs/abs3.svg'
-import a4 from '../../images/bgs/abs4.svg'
 import UserNotFound from '../UserNotFound'
 import { useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
@@ -26,7 +24,7 @@ export default function Accesscodes() {
             }
         },
         {
-            cardId: "c3", cardSrc: snip, cardTask: "Utility Commands", cardDesc: (<div>
+            cardId: "c2", cardSrc: snip, cardTask: "Utility Commands", cardDesc: (<div>
                 <div className='flex items-center my-2'><img src={success} alt="" className='w-6 mr-3' />Add on commands</div>
                 <div className='flex items-center my-2'><img src={success} alt="" className='w-6 mr-3' />No need to memorize</div>
                 <div className='flex items-center my-2'><img src={success} alt="" className='w-6 mr-3' />Stay always prepared</div>
@@ -43,15 +41,11 @@ export default function Accesscodes() {
     }, [setauthLoad])
     return (
         <>
-            <div className={`fade-slide-in ${loaded ? 'loaded' : ''} overflow-hidden`}>
+            <div className={`fade-slide-in ${loaded ? 'loaded' : ''}`}>
                 {authenticated ? <div>
-                    <div className={`img1 relative mx-auto max-w-[800px] ${authenticated ? 'block' : 'hidden'}`}>
-                        <img src={a3} alt="" className="absolute w-[560px] left-[-350px] -z-10 bottom-[-380px] opacity-10" />
-                        <img src={a4} alt="" className="absolute w-[350px] right-[-250px] -z-10 bottom-[-620px] opacity-50" />
-                    </div >
-                    <div className='codepage flex justify-center mx-auto flex-wrap px-4 py-5 rounded-lg mt-2'>
+                    <div className='codepage flex justify-center items-center h-[calc(100vh-70px)] mx-auto flex-wrap px-4 py-5 rounded-lg mt-2'>
                         {arr.map((element) => {
-                            return <div className='w-[30rem] flex flex-col justify-center items-center px-8 py-4 rounded-2xl shadow-xl space-y-3 mx-3 bg-gray-100/5 backdrop-filter backdrop-blur-lg'>
+                            return <div key={element.cardId} className='w-[30rem] flex flex-col justify-center items-center p-5 rounded-2xl form-shadow my-3 mx-3'>
                                 <div className="task_img">
                                     <img src={element.cardSrc} alt="" className='w-[110px] h-[110px] object-cover rounded-full' />
                                 </div>

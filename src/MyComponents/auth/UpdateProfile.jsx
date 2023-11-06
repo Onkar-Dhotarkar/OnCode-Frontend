@@ -23,7 +23,7 @@ import Loader from '../Popups/Others/Loader'
 import { BarLoader } from 'react-spinners'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import ChangeSkills from '../Popups/ProfilePopup/ChangeSkills'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import ChangeDescription from '../Popups/ProfilePopup/ChangeDescription'
 import ChangeOthers from '../Popups/ProfilePopup/ChangeOthers'
 import ReactCountryFlag from 'react-country-flag'
@@ -81,7 +81,7 @@ export default function UpdateProfile() {
                     setfetchedline(null)
                 }
             } catch (e) {
-                //error
+                toast.error("Problem to find user log")
             }
         }
         getData()
@@ -100,6 +100,13 @@ export default function UpdateProfile() {
         toast.success("Logged out from current account")
     }
 
+    const updateProfilePicInDatabase = async () => {
+        const userdoc = doc(db, user.useruid, user.useruid + "_userdata")
+        await updateDoc(userdoc, {
+            profile_pic: auth.currentUser.photoURL
+        })
+    }
+
     async function setProfilePicture() {
         setauthLoad(30)
         setSetting_profile(true)
@@ -109,6 +116,7 @@ export default function UpdateProfile() {
         await updateProfile(auth.currentUser, {
             photoURL: url
         })
+        updateProfilePicInDatabase()
         setProfile_popup(false)
         setSetting_profile(false)
         setauthLoad(100)

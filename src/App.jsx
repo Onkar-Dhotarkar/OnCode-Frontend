@@ -79,7 +79,7 @@ function App() {
 
   return (
     <div>
-      <div className="capitalize">
+      <div className="capitalize text-slate-600 font-semibold text-sm">
         <Toaster
           position="top-right"
           toastOptions={{
@@ -165,6 +165,7 @@ function App() {
           <Route path="/resetpassword" Component={ResetPassword} />
           <Route path="/profile" Component={UpdateProfile} />
           <Route path="/access-your-work" Component={Accesscodes} />
+          <Route path="/reset-password" Component={ResetPassword} />
           <Route path="/we" Component={Aboutus} />
           <Route element={<MyContextLayout />}>
             <Route path="/console" Component={SelectLang} />

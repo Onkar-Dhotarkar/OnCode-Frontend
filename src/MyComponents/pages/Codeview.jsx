@@ -138,7 +138,7 @@ export default function Codeview(props) {
                         <div className='outline-none border-gray-100'>
                             <SyntaxHighlighter className='px-5 py-3 mb-2 min-h-[40vh] rounded-b-[6.6px]' customStyle={{ width: "100%" }} language={code.language} style={viewTheme === 'dark' ? atomOneDark : github} wrapLongLines={true}>
                                 {code.currentcode}
-                            </SyntaxHighlighter>
+                            </SyntaxHighlighter>6
                         </div>
                     </div >
                     <label className='text-slate-600 font-semibold text-sm px-1 my-2'>

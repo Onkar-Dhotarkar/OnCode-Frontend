@@ -64,21 +64,20 @@ export default function SignUp() {
             country: "",
             oneliner: "",
             description: "",
+            profile_pic: "",
             skills: [],
             friendlist: [],
             received: [],
             sent: []
         }, {
-            codes: [{
-                dummy: true
-            }]
-            ,
-            webpages: [{
-                dummy: true
-            }]
-        },]
+            codes: [],
+            webpages: []
+        }, {
+            self_questions: [],
+            friend_questions: []
+        }]
 
-        let docNames = [auth.currentUser.uid + "_userdata", auth.currentUser.uid + "_usercodes"]
+        let docNames = [auth.currentUser.uid + "_userdata", auth.currentUser.uid + "_usercodes", auth.currentUser.uid + "_userquestions"]
         let i = 0;
         docsToAddonSignup.forEach((document) => {
             const docRef = doc(collectionRef, docNames[i])

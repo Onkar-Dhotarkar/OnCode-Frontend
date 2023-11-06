@@ -268,11 +268,11 @@ function Compiler() {
             })
         }
 
-        // init()
+        init()
         return () => {
-            // socketRef.current.disconnect();
-            // socketRef.current.off('joined');
-            // socketRef.current.off('disconnected');
+            socketRef.current.disconnect();
+            socketRef.current.off('joined');
+            socketRef.current.off('disconnected');
         }
     }, [reactNavigator, user.username, authenticated])
 

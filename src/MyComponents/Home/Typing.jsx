@@ -17,7 +17,7 @@ const Typing = () => {
         };
     }, []);
 
-    return <span ref={typedRef}></span>;
+    return <span className='font-mono' ref={typedRef}></span>;
 };
 
 export default Typing;

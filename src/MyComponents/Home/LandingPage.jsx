@@ -36,7 +36,7 @@ export default function LandingPage(props) {
                         <span className='text-[#fb6976]'>Stay</span> <Typing />
                     </div>
                     <div className="description-text mx-auto max-w-3xl text-slate-500 mt-6 text-lg font-semibold z-50">
-                        A Web Based programming application, that enables to write and store Codes at same location. If you're looking for a simple, convinient and sharable coding space you're at the right place. Enhance your coding journey with excellence, Happy Coding!
+                        "Welcome to our Web-Based programming application 🚀, where you can seamlessly write and store codes in one place 📄. If you crave a simple, convenient, and shareable coding experience, you've found your coding haven! 🌐✨ Elevate your coding journey with excellence and Happy Coding! 💻🎉"
                     </div>
                     <div className="flex max-w-[45rem] mx-auto justify-center items-center mt-4 space-x-5">
                         <Link to='/access-your-work' className="no-underline">

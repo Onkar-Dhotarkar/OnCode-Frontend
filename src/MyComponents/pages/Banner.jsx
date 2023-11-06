@@ -7,7 +7,7 @@ import { useContext } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { storage } from '../Firebase/Firebase'
-import { Modal, ModalHeader, ModalBody } from 'reactstrap'
+import { Modal, ModalBody } from 'reactstrap'
 import Loader from '../Popups/Others/Loader'
 import PopMessage from '../Popups/Others/PopMessage'
 
