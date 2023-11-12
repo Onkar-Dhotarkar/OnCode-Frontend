@@ -61,8 +61,13 @@ export default function Vieworadd() {
 
     return (
         <div className={`p-4 relative fade-slide-in ${loaded ? "loaded" : ""} relative`}>
+            <button className='mb-2 text-sm font-semibold text-slate-600 ' onClick={() => {
+                navigate("/community")
+            }}>
+                &larr; Back to community
+            </button>
             <div className="banner w-full h-44 rounded-2xl banner_color">
-                <img src={banner} alt="" className='w-full h-full object-cover rounded-2xl' />
+                {banner && <img src={banner} alt="" className='w-full h-full object-cover rounded-2xl' />}
             </div>
             <div className="left w-[20%] h-full absolute mt-4">
                 <div className="userdataholder">
@@ -82,8 +87,8 @@ export default function Vieworadd() {
                                 countryCode={dataToShow.usercountry}
                                 svg
                                 style={{
-                                    height: '2.1em',
-                                    width: '2.4em'
+                                    height: '2.3em',
+                                    width: '2.3em'
                                 }} />
                             {countryList().getLabel(dataToShow.usercountry)}
                         </div>
@@ -100,27 +105,31 @@ export default function Vieworadd() {
                     </div>
                 </div>
             </div>
+
             <div className="right absolute w-[75%] right-7 mt-3">
                 <div className=' text-2xl text-slate-600 font-bold tracking-tight'>
                     Skills ➡️
                 </div>
-                <div className="skills bg-white p-4 form-shadow mt-2 rounded-2xl flex flex-wrap justify-start items-center gap-2">
+                <div className="skills min-h-[13rem] bg-white p-4 form-shadow mt-2 rounded-2xl flex flex-wrap justify-start gap-2">
 
                     {dataToShow.userskills.map(skill => {
                         return (
-                            <div className='px-4 py-2 rounded-3xl font-semibold text-sm text-slate-600 capitalize border border-slate-100'>
+                            <div className='px-4 py-2 h-fit rounded-3xl font-semibold text-sm text-slate-600 capitalize border border-slate-100'>
                                 {skill}
                             </div>
                         )
                     })}
+
+                    {dataToShow.userskills.length === 0 && <div className='text-xl w-full text-center font-bold text-slate-500 tracking-tight'>No skills added yet by {dataToShow.username.split(" ")[0]} ❌</div>}
                 </div>
                 <div className=' text-2xl text-slate-600 font-bold tracking-tight mt-3'>
                     Little about {dataToShow.username.split(" ")[0]} 😊
                 </div>
-                <div className="skills bg-white p-4 text-sm font-semibold text-slate-600 form-shadow mt-2 rounded-2xl flex flex-wrap justify-start items-center gap-2">
+                <div className="skills bg-white p-4 text-sm font-semibold text-slate-500 form-shadow mt-2 rounded-2xl flex flex-wrap justify-start items-center gap-2 min-h-[13rem]">
                     {dataToShow.userdescription}
+                    {!dataToShow.userdescription && <div className='text-xl w-full font-bold text-slate-600 tracking-tight text-center'>No description set by {dataToShow.username.split(" ")[0]} ❌</div>}
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
