@@ -26,6 +26,7 @@ import { Toaster } from 'react-hot-toast'
 import LoadingBar from 'react-top-loading-bar'
 import Webeditor from "./MyComponents/pages/Webeditor";
 import Communityhome from "./MyComponents/Community/Communityhome";
+import Vieworadd from "./MyComponents/Community/Vieworadd";
 
 
 function App() {
@@ -167,6 +168,7 @@ function App() {
           <Route path="/access-your-work" Component={Accesscodes} />
           <Route path="/reset-password" Component={ResetPassword} />
           <Route path="/we" Component={Aboutus} />
+          <Route path="/userview" Component={Vieworadd} />
           <Route element={<MyContextLayout />}>
             <Route path="/console" Component={SelectLang} />
             <Route path="/codes" Component={Codes} />

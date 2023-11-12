@@ -16,16 +16,16 @@ export default function ChangeName() {
     async function setOthers() {
         setauthLoad(30)
         let docRef = doc(db, user.useruid, user.useruid + "_userdata");
-        if (!country || !oneliner) {
-            toast.error("Mention the new username")
+        if (!country && !oneliner) {
+            toast.error("Mention the required fields")
             setauthLoad(100)
             return
         }
         let code = countryList().getValue(country)
-        if (code !== undefined) {
+        if (code !== undefined || (code === undefined && oneliner)) {
             await updateDoc(docRef, {
-                country: code,
-                oneliner: oneliner
+                country: code || "",
+                oneliner: oneliner || ""
             })
         } else {
             toast.error("Enter a valid country name")

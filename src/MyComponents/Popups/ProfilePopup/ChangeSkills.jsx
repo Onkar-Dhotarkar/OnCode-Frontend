@@ -42,7 +42,12 @@ export default function ChangeSkills({ processongoing, setprocessongoing }) {
             {setting ? <div className='h-[40vh] flex items-center'><Loader title="Adding skills" /></div> : <div className='w-full' >
                 <div className="head flex flex-col items-center text-sm mx-auto w-full text-slate-600">
                     <div className='flex w-full justify-center items-center gap-2'>
-                        <input type="text" className='w-full rounded-md shadow-sm text-slate-500 text-sm py-2 px-2' placeholder='Coding and other skills' value={typed} onChange={(e) => {
+                        <input type="text" className='w-full rounded-md shadow-sm text-slate-500 text-sm py-2 px-2' placeholder='Coding and other skills' value={typed} onKeyDown={(e) => {
+                            if (e.key === "Enter" && typed) {
+                                setCurrent(prev => [...prev, typed])
+                                setTyped('')
+                            }
+                        }} onChange={(e) => {
                             setTyped(e.target.value)
                         }} />
                         <button className='bg-[#fb6976] text-white font-semibold text-sm px-3 py-2 rounded-md' onClick={() => {

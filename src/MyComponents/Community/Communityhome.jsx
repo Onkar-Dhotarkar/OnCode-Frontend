@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore'
 import { db } from '../Firebase/Firebase'
 import mail from '../../images/micro/mail.png'
 import friends from '../../images/micro/friends_theme.png'
@@ -11,21 +11,23 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 import atomOneDark from 'react-syntax-highlighter/dist/cjs/styles/hljs/atom-one-dark'
 import like from '../../images/micro/like.png'
 import heart from '../../images/micro/heart.png'
+import failure from '../../images/micro/failure.png'
 import comment from '../../images/micro/comment.png'
 import right_arrow from '../../images/micro/right-arrow.png'
 import user_demo_prof from '../../images/micro/user.png'
 import UserNotFound from '../UserNotFound'
 import Loader from '../Popups/Others/Loader'
+import not from '../../images/micro/not_found.png'
+import { useNavigate } from 'react-router-dom'
 // import error
 
 export default function Communityhome() {
     const { user, authenticated, setauthLoad } = useContext(AuthContext)
-    const [searchUserModal, setSearchUserModal] = useState(false)
     const [searchVal, setSearchVal] = useState("")
     const [allUsers, getAllUsers] = useState([])
     const [searching, isSearching] = useState(false)
-    const [dataInModal, setdataInModal] = useState([])
     const [loaded, setLoaded] = useState(false)
+    const navigate = useNavigate("/")
 
 
     const demoCode = `// Intentional error: accessing a property of an undefined variable
@@ -39,19 +41,8 @@ console.log("This line will not be reached.");
     at <filename>:2:30
 `
 
-    const getDataToPutInModalSearch = async () => {
-        allUsers.forEach((u) => {
-            const docData = doc(db, u.id, u.id + "_userdata")
-            getDoc(docData).then((doc) => {
-                setdataInModal(prev => ([...prev, doc.data()]))
-                // PUTTING ALL DATA IN A SEPARATE STATE AFTER RETRIEVAL AFTER FINDING THE DATA REGARDING EACH USER IN ALLUSERS 
-            })
-        })
-    }
-
     const userSearch = async () => {
         getAllUsers([])
-        setdataInModal([])
         setauthLoad(30)
         isSearching(true)
         const usersCollectionRef = collection(db, "users_id")
@@ -65,8 +56,6 @@ console.log("This line will not be reached.");
         })
         setauthLoad(100)
         isSearching(false)
-        getDataToPutInModalSearch()
-        setSearchUserModal(true)
     }
 
     useEffect(() => {
@@ -118,17 +107,45 @@ console.log("This line will not be reached.");
                             toast.error("Mention name to search")
                             return
                         }
-                        if (sbtn.textContent === "Search") {
-                            sbtn.textContent = "Close"
-                            await userSearch()
-                        } else {
-                            sbtn.textContent = "Search"
-                        }
-                        document.getElementById("results").classList.toggle("loaded")
-                        document.getElementById("results").classList.toggle("pointer-events-none")
+                        // else{}
+                        userSearch()
+                        document.getElementById("results").classList.add("loaded")
+                        document.getElementById("results").classList.remove("pointer-events-none")
                     }}
                         id='search-btn' className='bg-[#fb6976] text-white text-sm font-semibold px-3 py-2 rounded-3xl ml-3'>Search</button>
-                    <div id="results" className="searchResults z-30 fade-slide-in form-shadow fixed top-28 bg-white rounded-md mt-2 p-5 h-60 w-[50%] cursor-pointer pointer-events-none">
+
+                    <div id="results" className="searchResults z-30 fade-slide-in form-shadow fixed top-28 bg-white rounded-md mt-2 p-4 h-80 w-[50%] cursor-pointer pointer-events-none">
+                        <button className='absolute right-5' onClick={() => {
+                            document.getElementById("results").classList.remove("loaded")
+                            document.getElementById("results").classList.add("pointer-events-none")
+                        }}>
+                            <img src={failure} className='w-4 h-4' alt="" />
+                        </button>
+                        <div className='text-2xl text-slate-600 font-bold mb-2'>
+                            Search results for "{searchVal}" 🔎
+                        </div>
+                        {
+                            allUsers.map((u) => {
+                                return <div className='wrapper_main capitalize text-slate-600 font-semibold text-base flex justify-start items-center gap-2 transition-all duration-500 hover:bg-gray-100 px-3 py-2 rounded-md border-b border-b-slate-100' onClick={() => {
+                                    localStorage.setItem("currentUserToView", u.id)
+                                    navigate("/userview")
+                                }}>
+                                    <div className='w-3 h-3 rounded-full bg-[#fb6976]'></div>
+                                    {u.name}
+                                </div>
+                            })
+                        }
+
+                        {
+                            allUsers.length === 0 && !searching && <div className='text-xl text-slate-600 font-bold mb-3 flex justify-center items-center gap-2 h-[85%]'>
+                                <img src={not} alt="" />
+                                No results found ❌
+                            </div>
+                        }
+
+                        {
+                            searching && <div className='h-[85%] flex justify-center items-center'><Loader title={`Searching for ${searchVal}`} /></div>
+                        }
                     </div>
 
                     <div className="mt-3 heading text-2xl font-bold tracking-tight text-slate-600 flex justify-between items-center">

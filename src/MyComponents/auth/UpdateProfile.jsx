@@ -278,7 +278,7 @@ export default function UpdateProfile() {
                         </div>
                         <div className='skills text-sm flex flex-wrap justify-start gap-2 mt-2 '>
                             {fetchedskills === null ? <label className='text-slate-600 border border-slate-100 font-semibold px-3 py-2 text-sm rounded-3xl cursor-pointer flex items-center justify-center gap-2 mt-2'>Show your skills</label> : fetchedskills.length !== 0 ? fetchedskills.map((element) => {
-                                return (<div key={element} className='text-slate-600 font-semibold flex justify-center items-center border border-slate-400 w-fit px-4 py-1 rounded-lg capitalize'>
+                                return (<div key={element} className='text-slate-600 font-semibold flex justify-center items-center border border-slate-400 w-fit px-4 py-2 rounded-3xl capitalize'>
                                     {element}
                                 </div>)
                             }) : <Loader />}
