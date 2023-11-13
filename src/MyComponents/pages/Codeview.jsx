@@ -92,9 +92,9 @@ export default function Codeview(props) {
     return (
         <>
             <Modal isOpen={modal} toggle={() => { setModal(!modal) }} size='md'>
-                <ModalHeader toggle={() => { setModal(!modal) }}>Do you want to download the code ? </ModalHeader>
-                <ModalBody className='flex justify-center items-center' ><PopMessage src={download} main="Download Code" sub="Sure, then hit the button" description="By pressing the download button the code will be downloaded in your system" content="Download" clickFunction={saveCode} /></ModalBody>
+                <ModalBody className='flex justify-center items-center p-5' ><PopMessage src={download} main="Download Code" sub="Sure, then hit the button" description="By pressing the download ⬇️ button the code will be downloaded in your system 🖥️" content="Download" clickFunction={saveCode} /></ModalBody>
             </Modal>
+
             {authenticated ? !code ? <div className='w-[70vw] h-[85vh] mx-auto flex items-center'><Loader title="Fetching code" /></div> :
                 <div className={`w-[70vw] h-[100vh] mx-auto  fade-slide-in ${loaded ? 'loaded' : ''}`} >
                     <div className='flex flex-col w-[100%] justify-start gap-3 mt-4'>
@@ -138,7 +138,7 @@ export default function Codeview(props) {
                         <div className='outline-none border-gray-100'>
                             <SyntaxHighlighter className='px-5 py-3 mb-2 min-h-[40vh] rounded-b-[6.6px]' customStyle={{ width: "100%" }} language={code.language} style={viewTheme === 'dark' ? atomOneDark : github} wrapLongLines={true}>
                                 {code.currentcode}
-                            </SyntaxHighlighter>6
+                            </SyntaxHighlighter>
                         </div>
                     </div >
                     <label className='text-slate-600 font-semibold text-sm px-1 my-2'>

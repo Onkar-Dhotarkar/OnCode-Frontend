@@ -243,7 +243,7 @@ export default function Codetable(props) {
                             <div>
                                 {dbdata.map((code, i) => {
                                     return (
-                                        code.language === langDetails && <div className={`user-code-wrapper flex items-center justify-between py-2 ${i % 2 === 0 ? 'bg-[#eee]' : "bg-white"}`}>
+                                        code.language === langDetails && <div className={`user-code-wrapper flex items-center justify-between py-2 ${i % 2 !== 0 ? 'bg-[#eee]' : "bg-white"}`}>
                                             <div className="codename w-1/4 text-center ml-2">{code.codename}</div>
                                             <div className="language text-center w-1/4 flex justify-center items-center gap-2 capitalize">
                                                 <img src={image_lang_map[code.language]} className='w-5' alt="" />

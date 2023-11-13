@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
-import { collection, getDocs } from 'firebase/firestore'
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore'
 import { db } from '../Firebase/Firebase'
 import mail from '../../images/micro/mail.png'
 import friends from '../../images/micro/friends_theme.png'
@@ -18,6 +18,8 @@ import user_demo_prof from '../../images/micro/user.png'
 import UserNotFound from '../UserNotFound'
 import Loader from '../Popups/Others/Loader'
 import not from '../../images/micro/not_found.png'
+import success from '../../images/micro/success.png'
+import bin from '../../images/micro/delete_white.png'
 import { useNavigate } from 'react-router-dom'
 // import error
 
@@ -27,6 +29,10 @@ export default function Communityhome() {
     const [allUsers, getAllUsers] = useState([])
     const [searching, isSearching] = useState(false)
     const [loaded, setLoaded] = useState(false)
+
+
+    //states for holding community related data
+    const [frndreq, setFriendRequests] = useState([])
     const navigate = useNavigate("/")
 
 
@@ -40,6 +46,62 @@ console.log("This line will not be reached.");
     const demoError = `Uncaught ReferenceError: undefinedVariable is not defined
     at <filename>:2:30
 `
+
+    const checkForFriendRequests = async () => {
+        const selfDoc = doc(db, user.useruid, user.useruid + "_userdata")
+        const data = (await (getDoc(selfDoc))).data()
+        setFriendRequests(data.received)
+    }
+
+    const seeRequests = () => {
+        localStorage.setItem("frndRequests", frndreq)
+        navigate("/friend-requests")
+    }
+
+    const accept = async (req) => {
+        setauthLoad(30)
+        const selfDoc = doc(db, user.useruid, user.useruid + "_userdata")
+        const requesterDoc = doc(db, req.requesterId, req.requesterId + "_userdata")
+        await updateDoc(selfDoc, {
+            friendlist: arrayUnion({
+                name: req.requesterName,
+                id: req.requesterId,
+                profile: req.requesterProfile
+            }),
+            received: arrayRemove(req)
+        }).catch(() => {
+            toast.error("Failed to add as friend")
+            return
+        })
+
+        await updateDoc(requesterDoc, {
+            friendlist: arrayUnion({
+                name: user.username,
+                id: user.useruid,
+                profile: user.userprofile
+            }),
+        }).catch(() => {
+            toast.error("Failed to add as friend")
+            return
+        })
+
+        toast.success(req.requesterName + "is now your friend")
+        setauthLoad(100)
+    }
+
+    const reject = async (req) => {
+        setauthLoad(30)
+        const selfDoc = doc(db, user.useruid, user.useruid + "_userdata")
+        await updateDoc(selfDoc, {
+            received: arrayRemove(req)
+        }).catch(() => {
+            toast.error("Failed to remove")
+            return
+        })
+        toast.success("Removed the request")
+        checkForFriendRequests()
+        setauthLoad(100)
+    }
 
     const userSearch = async () => {
         getAllUsers([])
@@ -60,16 +122,42 @@ console.log("This line will not be reached.");
 
     useEffect(() => {
         setauthLoad(30)
-        setTimeout(() => {
-            setLoaded(true)
-        }, 800);
+        checkForFriendRequests()
+        setLoaded(true)
         setauthLoad(100)
     }, [])
+
+
+
 
     return (
         <>
             {!authenticated ? <div className='h-[70vh] flex justify-center items-center'><UserNotFound /></div> : !loaded ? <div className='h-[80vh] flex justify-center items-center'><Loader title={"Waiting for the community"} /></div> : <div className={`maincontainer fade-slide-in flex ${loaded ? "loaded" : ""}`}>
-                <div className="left w-[15%] p-4">
+
+                <div className="left w-[15%] p-4 relative">
+
+                    <div id='notify-sidebar' className="sidebar community-notification z-20 absolute top-0 bg-white">
+                        <img src={failure} className='w-4 h-4 absolute right-4 top-4 cursor-pointer hover:opacity-50' onClick={() => { document.getElementById("notify-sidebar").classList.toggle("active") }} alt="" />
+                        {
+                            frndreq.map((req, i) => {
+                                return (
+                                    <div className={`flex justify-start items-center gap-2 ${i == 0 ? "mt-10" : "mt-2"}`}>
+                                        <div className='w-10 h-10 rounded-full p-[1.2px] border-2 border-[#fb6976]'>
+                                            <img src={req.requesterProfile} className='w-full h-full rounded-full object-cover' alt="" />
+                                        </div>
+                                        <div className="otherdata text-sm font-semibold text-slate-600">
+                                            <span className='capitalize'>{req.requesterName}</span> sent you a friend request
+                                            <div className="actions text-sm font-semibold text-white flex justify-start items-center gap-2 mt-1">
+                                                <button className='bg-[#fb6976] px-3 py-1 rounded-md flex justify-center items-center gap-2' onClick={() => accept(req)}>Accept <img src={success} className="w-4 h-4" alt="" /></button>
+                                                <button onClick={() => reject(req)} className='bg-gray-300 px-3 py-1 rounded-md flex justify-center items-center gap-2'>Remove <img src={bin} className='w-4 h-4' alt="" /></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+
                     <div className='flex flex-col items-center'>
                         <div className='w-16 h-16 p-[2px] rounded-full border-2 border-[#fb6976]'>
                             <img src={user.userprofile} className='w-full h-full rounded-full object-cover' alt="" />
@@ -79,14 +167,23 @@ console.log("This line will not be reached.");
                     </div>
                     <div className="separator bg-gray-100 h-[1px] mt-4"></div>
                     <div className="control text-sm text-slate-600 font-semibold flex flex-col items-center mt-4 gap-1">
-                        <button className='flex justify-start items-center gap-2 w-44 hover:bg-[#eee] transition-all duration-500 px-3 py-2 rounded-md'>
-                            <img src={friends} className='w-4 h-4' alt="" />
-                            Friend requests</button>
-                        <button className='flex items-center justify-start gap-2 w-44 hover:bg-[#eee] transition-all duration-500 px-3 py-2 rounded-md'>
+                        <button className='flex justify-start items-center gap-2 w-44 hover:bg-[#eee] transition-all duration-500 px-3 py-2 rounded-md' onClick={() => {
+                            document.getElementById("notify-sidebar").classList.toggle("active")
+                        }}>
+                            <div className='flex justify-start items-center gap-2'>
+                                <img src={friends} className='w-4 h-4' alt="" />
+                                Friend requests
+                            </div>
+                            {frndreq.length > 0 && <div className='mt-[1.5px] text-[#fb6976]'>
+                                {frndreq.length}
+                            </div>}
+                        </button>
+
+                        <button className='flex items-center justify-start gap-2 w-44 hover:bg-[#eee] transition-all duration-500 px-3 py-2 rounded-md' onClick={() => { document.getElementById("notify-sidebar").classList.toggle("active") }}>
                             <img src={mail} className='w-4 h-4' alt="" />
                             Notifications
                         </button>
-                        <button className='flex items-center justify-start gap-2 w-44 hover:bg-[#eee] transition-all duration-500 px-3 py-2 rounded-md'>
+                        <button className='flex items-center justify-start gap-2 w-44 hover:bg-[#eee] transition-all duration-500 px-3 py-2 rounded-md' onClick={""}>
                             <img src={share} className='w-4 h-4' alt="" />
                             New question
                         </button>
@@ -128,6 +225,11 @@ console.log("This line will not be reached.");
                             allUsers.map((u) => {
                                 return <div className='wrapper_main capitalize text-slate-600 font-semibold text-base flex justify-start items-center gap-2 transition-all duration-500 hover:bg-gray-100 px-3 py-2 rounded-md border-b border-b-slate-100' onClick={() => {
                                     localStorage.setItem("currentUserToView", u.id)
+                                    if (u.id === user.useruid) {
+                                        navigate("/profile")
+                                        toast.success("Viewing self profile")
+                                        return
+                                    }
                                     navigate("/userview")
                                 }}>
                                     <div className='w-3 h-3 rounded-full bg-[#fb6976]'></div>
