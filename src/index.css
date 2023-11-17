@@ -120,9 +120,8 @@ input {
 
 .community-notification {
   width: 25%;
-  height: 100%;
+  height: 30rem;
   position: fixed;
-  bottom: 0;
   left: -500px;
   transform: (-50%, -50%);
   transition: 0.5s;
@@ -132,7 +131,6 @@ input {
 
 .community-notification.active {
   left: 10px;
-  bottom: 9px;
   visibility: visible;
   opacity: 1;
   transition: 0.5s;

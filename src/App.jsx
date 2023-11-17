@@ -6,6 +6,18 @@ import UpdateProfile from "./MyComponents/auth/UpdateProfile";
 import Accesscodes from "./MyComponents/pages/Accesswork";
 import SelectLang from "./MyComponents/pages/Selectlang";
 import Codes from "./MyComponents/pages/Codes"
+import Codeview from "./MyComponents/pages/Codeview";
+import Compiler from "./MyComponents/pages/Compiler";
+import Aboutus from './MyComponents/pages/Aboutus'
+import { Toaster } from 'react-hot-toast'
+import LoadingBar from 'react-top-loading-bar'
+import Webeditor from "./MyComponents/pages/Webeditor";
+import Communityhome from "./MyComponents/Community/Communityhome";
+import Vieworadd from "./MyComponents/Community/Vieworadd";
+import Addquestion from "./MyComponents/Community/Addquestion";
+import Commands from "./MyComponents/pages/Commands";
+import Commandview from "./MyComponents/pages/Commandview";
+
 import { auth } from "./MyComponents/Firebase/Firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import profile_pic from './images/micro/user.png'
@@ -19,14 +31,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import Codeview from "./MyComponents/pages/Codeview";
-import Compiler from "./MyComponents/pages/Compiler";
-import Aboutus from './MyComponents/pages/Aboutus'
-import { Toaster } from 'react-hot-toast'
-import LoadingBar from 'react-top-loading-bar'
-import Webeditor from "./MyComponents/pages/Webeditor";
-import Communityhome from "./MyComponents/Community/Communityhome";
-import Vieworadd from "./MyComponents/Community/Vieworadd";
+
 
 
 function App() {
@@ -169,6 +174,9 @@ function App() {
           <Route path="/reset-password" Component={ResetPassword} />
           <Route path="/we" Component={Aboutus} />
           <Route path="/userview" Component={Vieworadd} />
+          <Route path="/add-question-to-community" Component={Addquestion} />
+          <Route path="/commands" Component={Commands} />
+          <Route path="/commandview" Component={Commandview} />
           <Route element={<MyContextLayout />}>
             <Route path="/console" Component={SelectLang} />
             <Route path="/codes" Component={Codes} />

@@ -8,7 +8,7 @@ import toast from 'react-hot-toast'
 import { auth, db } from '../Firebase/Firebase'
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth'
 import { Link, useNavigate } from 'react-router-dom'
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import { collection, doc, setDoc } from 'firebase/firestore'
 
 export default function SignUp() {
     const [loaded, setLoaded] = useState(false)
@@ -71,10 +71,10 @@ export default function SignUp() {
             sent: []
         }, {
             codes: [],
+            commands: [],
             webpages: []
         }, {
             self_questions: [],
-            friend_questions: []
         }]
 
         let docNames = [auth.currentUser.uid + "_userdata", auth.currentUser.uid + "_usercodes", auth.currentUser.uid + "_userquestions"]

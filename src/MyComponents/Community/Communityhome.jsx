@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
 import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore'
 import { db } from '../Firebase/Firebase'
@@ -10,11 +10,9 @@ import toast from 'react-hot-toast'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import atomOneDark from 'react-syntax-highlighter/dist/cjs/styles/hljs/atom-one-dark'
 import like from '../../images/micro/like.png'
-import heart from '../../images/micro/heart.png'
 import failure from '../../images/micro/failure.png'
 import comment from '../../images/micro/comment.png'
 import right_arrow from '../../images/micro/right-arrow.png'
-import user_demo_prof from '../../images/micro/user.png'
 import UserNotFound from '../UserNotFound'
 import Loader from '../Popups/Others/Loader'
 import not from '../../images/micro/not_found.png'
@@ -30,33 +28,39 @@ export default function Communityhome() {
     const [searching, isSearching] = useState(false)
     const [loaded, setLoaded] = useState(false)
 
-
     //states for holding community related data
     const [frndreq, setFriendRequests] = useState([])
+    const [friendlist, setFriendList] = useState([])
+    const [self_questions, set_self_questions] = useState([])
+    const [friend_questions, set_friend_questions] = useState([])
+    const [tobemapped, setobemapped] = useState([])
+    const [tapped, setTapped] = useState(false)
     const navigate = useNavigate("/")
 
+    const fetchMyQuestions = useCallback(async (friendl) => {
+        const selfquestionDoc = doc(db, user.useruid, user.useruid + "_userquestions")
+        const data = (await (getDoc(selfquestionDoc))).data()
+        set_self_questions(data.self_questions)
+        setobemapped(self_questions)
 
-    const demoCode = `// Intentional error: accessing a property of an undefined variable
-let undefinedVariable;
-let propertyValue = undefinedVariable.property; // This line will throw a ReferenceError
+        let i = 0
+        console.log(friendl.length);
+        while (i < friendl.length) {
+            const frndDoc = doc(db, friendl[i].id, friendl[i].id + "_userquestions")
+            const data = (await getDoc(frndDoc)).data()
+            set_friend_questions(prev => [...prev, ...data.self_questions])
+            i += 1
+        }
 
-// The following line will not be executed due to the error above
-console.log("This line will not be reached.");
-`
-    const demoError = `Uncaught ReferenceError: undefinedVariable is not defined
-    at <filename>:2:30
-`
+    }, [user.useruid, self_questions])
 
-    const checkForFriendRequests = async () => {
+    const checkForFriendRequests = useCallback(async () => {
         const selfDoc = doc(db, user.useruid, user.useruid + "_userdata")
         const data = (await (getDoc(selfDoc))).data()
         setFriendRequests(data.received)
-    }
-
-    const seeRequests = () => {
-        localStorage.setItem("frndRequests", frndreq)
-        navigate("/friend-requests")
-    }
+        setFriendList(data.friendlist)
+        fetchMyQuestions(data.friendlist)
+    }, [setFriendList, setFriendRequests, user.useruid, fetchMyQuestions])
 
     const accept = async (req) => {
         setauthLoad(30)
@@ -127,21 +131,18 @@ console.log("This line will not be reached.");
         setauthLoad(100)
     }, [])
 
-
-
-
     return (
         <>
             {!authenticated ? <div className='h-[70vh] flex justify-center items-center'><UserNotFound /></div> : !loaded ? <div className='h-[80vh] flex justify-center items-center'><Loader title={"Waiting for the community"} /></div> : <div className={`maincontainer fade-slide-in flex ${loaded ? "loaded" : ""}`}>
 
                 <div className="left w-[15%] p-4 relative">
 
-                    <div id='notify-sidebar' className="sidebar community-notification z-20 absolute top-0 bg-white">
+                    <div id='notify-sidebar' className="sidebar form-shadow rounded-2xl h- community-notification z-20 absolute top-3 bg-white">
                         <img src={failure} className='w-4 h-4 absolute right-4 top-4 cursor-pointer hover:opacity-50' onClick={() => { document.getElementById("notify-sidebar").classList.toggle("active") }} alt="" />
                         {
                             frndreq.map((req, i) => {
                                 return (
-                                    <div className={`flex justify-start items-center gap-2 ${i == 0 ? "mt-10" : "mt-2"}`}>
+                                    <div key={i} className={`flex justify-start items-center gap-2 ${i === 0 ? "mt-10" : "mt-2"}`}>
                                         <div className='w-10 h-10 rounded-full p-[1.2px] border-2 border-[#fb6976]'>
                                             <img src={req.requesterProfile} className='w-full h-full rounded-full object-cover' alt="" />
                                         </div>
@@ -155,6 +156,9 @@ console.log("This line will not be reached.");
                                     </div>
                                 )
                             })
+                        }
+                        {
+                            frndreq.length === 0 && <div className='text-2xl p-4 h-full text-center flex items-center text-slate-600 font-bold tracking-tight'>No friend requests received 📥</div>
                         }
                     </div>
 
@@ -183,7 +187,7 @@ console.log("This line will not be reached.");
                             <img src={mail} className='w-4 h-4' alt="" />
                             Notifications
                         </button>
-                        <button className='flex items-center justify-start gap-2 w-44 hover:bg-[#eee] transition-all duration-500 px-3 py-2 rounded-md' onClick={""}>
+                        <button className='flex items-center justify-start gap-2 w-44 hover:bg-[#eee] transition-all duration-500 px-3 py-2 rounded-md' onClick={() => navigate("/add-question-to-community")}>
                             <img src={share} className='w-4 h-4' alt="" />
                             New question
                         </button>
@@ -256,164 +260,87 @@ console.log("This line will not be reached.");
                             <input type="text" placeholder='Search for questions in your timeline🔎' className='px-2 py-2 rounded-md border-1 border-slate-100 text-sm w-80 font-normal' />
                         </div>
                         <div className="options text-slate-400 text-sm flex justify-center items-center gap-3 tracking-normal font-semibold">
-                            <span className='cursor-pointer hover:text-slate-700 transition-all duration-500'>
+                            <span className='cursor-pointer hover:text-slate-700 transition-all duration-500' onClick={() => {
+                                setobemapped(self_questions)
+                                setTapped(true)
+                            }}>
                                 By You🧑‍💻
                             </span>
-                            <span className='cursor-pointer hover:text-slate-700 transition-all duration-500'>
+                            <span className='cursor-pointer hover:text-slate-700 transition-all duration-500' onClick={() => {
+                                setobemapped(friend_questions)
+                                setTapped(true)
+                            }}>
                                 By your Friends🧑‍🤝‍🧑
                             </span>
                         </div>
                     </div>
 
                     <div className="timeline mt-3">
-                        <div className="questions bg-[#dfebff] p-5 rounded-xl mt-2 shadow-sm">
-                            <div className="about-asker flex justify-start items-center gap-2">
-                                <img src={user.userprofile} className='w-9 h-9 rounded-full object-cover' alt="" />
-                                <div className="other-info text-slate-600 font-bold text-sm">
-                                    By you
-                                    <div className="time text-xs text-slate-400">
-                                        2 days ago
+                        {tobemapped.map((q) => {
+                            return (
+                                <div className={`questions bg-[#eee] p-5 rounded-xl mt-2 shadow-sm fade-slide-in ${tapped ? "loaded" : ""}`} >
+                                    <div className="about-asker flex justify-start items-center gap-2">
+                                        <img src={q.posted_by.profile} className='w-9 h-9 rounded-full object-cover' alt="" />
+                                        <div className="other-info text-slate-600 font-bold text-sm">
+                                            By {q.posted_by.name.split(" ")[0]}
+                                            <div className="time text-xs text-slate-400">
+                                                {q.date}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="question text-slate-600 font-semibold mt-2">
+                                        {q.question_title}
+                                    </div>
+
+                                    <div className="uploaded-code-and-issues mt-3">
+                                        <SyntaxHighlighter style={atomOneDark} language={q.language} wrapLongLines={true} className="rounded-md p-4">
+                                            {q.question_code}
+                                        </SyntaxHighlighter>
+
+                                        <div className="error text-sm text-slate-600 font-semibold">
+                                            Error / Issue
+                                        </div>
+                                        <SyntaxHighlighter wrapLongLines={true} language={q.language} className="rounded-md p-4 text-red-400 shadow-md mt-2">
+                                            {q.question_error}
+                                        </SyntaxHighlighter>
+                                    </div>
+
+                                    <div className='flex justify-between items-center px-1'>
+                                        <div className="friend_responses text-slate-600 text-sm font-semibold flex justify-start items-center gap-6 px-1">
+                                            <button className="like flex justify-start items-center gap-1">
+                                                <img src={like} className='w-4 h-4' alt="" />
+                                                {q.likes.length} Likes
+                                            </button>
+                                            <button className="comments flex justify-start items-center gap-1">
+                                                <img src={comment} className='w-4 h-4' alt="" />
+                                                {q.comments.length} Comments
+                                            </button>
+                                            <button className="solutions flex justify-start items-center gap-1">
+                                                <div>{q.responses.length}</div>
+                                                Responses
+                                            </button>
+                                        </div>
+                                        <button className='text-white font-semibold text-sm bg-[#fb6976] rounded-md px-3 py-2 flex justify-center items-center gap-2'>
+                                            Add answer<img src={right_arrow} className='w-3 h-3' alt="" /></button>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="question text-slate-600 font-semibold mt-2">
-                                Hey friends🧑‍🤝‍🧑, I am getting an error in the following program in javascript can someone help with this.I am new at coding so i'm not getting the issue can someone help me with this❓
-                            </div>
-
-                            <div className="uploaded-code-and-issues mt-3">
-                                <SyntaxHighlighter style={atomOneDark} language="javascript" wrapLongLines={true} className="rounded-md p-4">
-                                    {demoCode}
-                                </SyntaxHighlighter>
-
-                                <SyntaxHighlighter language="javascript" wrapLongLines={true} className="rounded-md p-4 text-red-400">
-                                    {demoError}
-                                </SyntaxHighlighter>
-                            </div>
-
-                            <div className='flex justify-between items-center px-1'>
-                                <div className="friend_responses text-slate-600 text-sm font-semibold flex justify-start items-center gap-6 px-1">
-                                    <button className="like flex justify-start items-center gap-1">
-                                        <img src={like} className='w-4 h-4' alt="" />
-                                        {32} Likes
-                                    </button>
-                                    <button className="comments flex justify-start items-center gap-1">
-                                        <img src={comment} className='w-4 h-4' alt="" />
-                                        {23} Comments
-                                    </button>
-                                    <button className="solutions flex justify-start items-center gap-1">
-                                        <div>11</div>
-                                        Responses
-                                    </button>
-                                </div>
-                                <button className='text-white font-semibold text-sm bg-[#fb6976] rounded-md px-3 py-2 flex justify-center items-center gap-2'>
-                                    Add answer<img src={right_arrow} className='w-3 h-3' alt="" /></button>
-                            </div>
-
-                        </div>
-                        <div className="questions bg-[#fddada] p-5 rounded-xl mt-2 shadow-sm">
-                            <div className="about-asker flex justify-start items-center gap-2">
-                                <img src={user.userprofile} className='w-9 h-9 rounded-full object-cover' alt="" />
-                                <div className="other-info text-slate-600 font-bold text-sm">
-                                    By you
-                                    <div className="time text-xs text-slate-400">
-                                        2 days ago
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="question text-slate-600 font-semibold mt-2">
-                                Hey friends🧑‍🤝‍🧑, I am getting an error in the following program in javascript can someone help with this.I am new at coding so i'm not getting the issue can someone help me with this❓
-                            </div>
-
-                            <div className="uploaded-code-and-issues mt-3">
-                                <SyntaxHighlighter style={atomOneDark} language="javascript" wrapLongLines={true} className="rounded-md p-4">
-                                    {demoCode}
-                                </SyntaxHighlighter>
-
-                                <SyntaxHighlighter language="javascript" wrapLongLines={true} className="rounded-md p-4 text-red-400">
-                                    {demoError}
-                                </SyntaxHighlighter>
-                            </div>
-
-                            <div className='flex justify-between items-center px-1'>
-                                <div className="friend_responses text-slate-600 text-sm font-semibold flex justify-start items-center gap-6 px-1">
-                                    <button className="like flex justify-start items-center gap-1">
-                                        <img src={like} className='w-4 h-4' alt="" />
-                                        {32} Likes
-                                    </button>
-                                    <button className="comments flex justify-start items-center gap-1">
-                                        <img src={comment} className='w-4 h-4' alt="" />
-                                        {23} Comments
-                                    </button>
-                                    <button className="solutions flex justify-start items-center gap-1">
-                                        <div>11</div>
-                                        Responses
-                                    </button>
-                                </div>
-                                <button className='text-white font-semibold text-sm bg-[#fb6976] rounded-md px-3 py-2 flex justify-center items-center gap-2'>
-                                    Add answer<img src={right_arrow} className='w-3 h-3' alt="" /></button>
-                            </div>
-                        </div>
-
-                        <div className="questions bg-gray-100 p-5 rounded-xl mt-2 shadow-sm">
-                            <div className="about-asker flex justify-start items-center gap-2">
-                                <img src={user.userprofile} className='w-9 h-9 rounded-full object-cover' alt="" />
-                                <div className="other-info text-slate-600 font-bold text-sm">
-                                    By you
-                                    <div className="time text-xs text-slate-400">
-                                        2 days ago
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="question text-slate-600 font-semibold mt-2">
-                                Hey friends🧑‍🤝‍🧑, I am getting an error in the following program in javascript can someone help with this.I am new at coding so i'm not getting the issue can someone help me with this❓
-                            </div>
-
-                            <div className="uploaded-code-and-issues mt-3">
-                                <SyntaxHighlighter style={atomOneDark} language="javascript" wrapLongLines={true} className="rounded-md p-4">
-                                    {demoCode}
-                                </SyntaxHighlighter>
-
-                                <SyntaxHighlighter language="javascript" wrapLongLines={true} className="rounded-md p-4 text-red-400">
-                                    {demoError}
-                                </SyntaxHighlighter>
-                            </div>
-
-                            <div className='flex justify-between items-center px-1'>
-                                <div className="friend_responses text-slate-600 text-sm font-semibold flex justify-start items-center gap-6 px-1">
-                                    <button className="like flex justify-start items-center gap-1">
-                                        <img src={like} className='w-4 h-4' alt="" />
-                                        {32} Likes
-                                    </button>
-                                    <button className="comments flex justify-start items-center gap-1">
-                                        <img src={comment} className='w-4 h-4' alt="" />
-                                        {23} Comments
-                                    </button>
-                                    <button className="solutions flex justify-start items-center gap-1">
-                                        <div>11</div>
-                                        Responses
-                                    </button>
-                                </div>
-                                <button className='text-white font-semibold text-sm bg-[#fb6976] rounded-md px-3 py-2 flex justify-center items-center gap-2'>
-                                    Add answer<img src={right_arrow} className='w-3 h-3' alt="" /></button>
-                            </div>
-                        </div>
+                            )
+                        })}
+                        {
+                            tobemapped !== undefined && tobemapped.length === 0 && <div className='w-[97%] text-2xl text-slate-600 font-bold tracking-tight h-[30vh] flex justify-center items-center'>No questions added yet 🥲</div>
+                        }
                     </div>
                 </div>
 
                 <div className="right text-2xl w-[20%] font-bold tracking-tight text-slate-600 py-4 px-3">
                     Community🧑‍🤝‍🧑
-                    <div className="friend-list text-sm font-semibold flex flex-col items-start space-y-2 mt-2 shadow-sm  rounded-xl text-slate-500 mb-3 p-4">
-                        <div className='flex justify-start items-center gap-2 cursor-pointer'><img src={user_demo_prof} className='w-7 h-7' alt="" />Onkar Dhotarkar</div>
-                        <div className='flex justify-start items-center gap-2 cursor-pointer'><img src={user_demo_prof} className='w-7 h-7' alt="" />Dnyandeep Gaonkar</div>
-                        <div className='flex justify-start items-center gap-2 cursor-pointer'><img src={user_demo_prof} className='w-7 h-7' alt="" />Yash Pawar</div>
-                        <div className='flex justify-start items-center gap-2 cursor-pointer'><img src={user_demo_prof} className='w-7 h-7' alt="" />Shivraj Gadekar</div>
-                        <div className='flex justify-start items-center gap-2 cursor-pointer'><img src={user_demo_prof} className='w-7 h-7' alt="" />Swayam Verma</div>
-                        <div className='flex justify-start items-center gap-2 cursor-pointer'><img src={user_demo_prof} className='w-7 h-7' alt="" />Justin Fernandes</div>
-                        <div className='flex justify-start items-center gap-2 cursor-pointer'><img src={user_demo_prof} className='w-7 h-7' alt="" />Atharva Manjrekar</div>
-                        <div className='flex justify-start items-center gap-2 cursor-pointer'><img src={user_demo_prof} className='w-7 h-7' alt="" />Sarvesh Kilje</div>
+                    <div className="friend-list text-sm font-semibold flex flex-col items-start space-y-2 mt-2 shadow-sm  rounded-xl text-slate-600 mb-3 p-4">
+                        {friendlist.map((friend) => {
+                            return (
+                                <div className='flex justify-start items-center gap-2 cursor-pointer capitalize'><img src={friend.profile} className='w-8 h-8 rounded-full' alt="" />{friend.name}</div>
+                            )
+                        })}
                     </div>
                     Future Plans🚀
                     <div className="text-sm text-gray-500">

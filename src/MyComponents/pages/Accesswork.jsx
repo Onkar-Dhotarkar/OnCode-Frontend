@@ -29,7 +29,9 @@ export default function Accesscodes() {
                 <div className='flex items-center my-2'><img src={success} alt="" className='w-6 mr-3' />No need to memorize</div>
                 <div className='flex items-center my-2'><img src={success} alt="" className='w-6 mr-3' />Stay always prepared</div>
                 <div className='flex items-center my-2'><img src={success} alt="" className='w-6 mr-3' />Setup projects</div>
-            </div>), onClick: ''
+            </div>), onClick: () => {
+                navigate("/commands")
+            }
         }
     ]
     useEffect(() => {

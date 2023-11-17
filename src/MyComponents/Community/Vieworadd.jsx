@@ -1,10 +1,9 @@
-import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'
+import { arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore'
 import React, { useEffect, useState, useCallback, useContext } from 'react'
 import { auth, db, storage } from '../Firebase/Firebase'
 import friends from '../../images/micro/friends.png'
 import ReactCountryFlag from 'react-country-flag'
 import countryList from 'react-select-country-list'
-import { BarLoader } from 'react-spinners'
 import { ref, getDownloadURL, } from 'firebase/storage'
 import chat from '../../images/micro/chat.png'
 import post from '../../images/micro/post.png'
@@ -169,7 +168,7 @@ export default function Vieworadd() {
             </div>
 
             <div className="right absolute w-[75%] right-7 mt-3 pb-4">
-                <div className=' text-2xl text-slate-500 font-bold tracking-tight'>
+                <div className=' text-2xl text-slate-600 font-bold tracking-tight'>
                     Skills ➡️
                 </div>
                 <div className="skills h-[7rem] bg-white p-4 form-shadow mt-2 rounded-2xl flex flex-wrap justify-start gap-2">

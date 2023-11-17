@@ -178,13 +178,13 @@ export default function Codetable(props) {
                     <div className="heading text-3xl font-bold tracking-tight text-slate-700 flex justify-start items-center gap-4">
                         🚀 Codes
                         <div className='flex justify-start items-center gap-2 mt-2 text-white text-sm font-semibold'>
-                            <button className='px-4 py-2 rounded-md flex justify-center items-center gap-1 bg-[#fb6976]' onClick={() => {
+                            <button className='px-4 py-2 rounded-2xl flex justify-center items-center gap-1 bg-[#fb6976]' onClick={() => {
                                 setaddordelete('add')
                                 setModal(true)
                             }}>New
                                 <img src={add} className='w-5 h-5' alt="" />
                             </button>
-                            <button className='px-3 py-2 rounded-md flex justify-center items-center gap-1 bg-gray-300' onClick={refreshData}>Refresh
+                            <button className='px-3 py-2 rounded-2xl flex justify-center items-center gap-1 bg-gray-300' onClick={refreshData}>Refresh
                                 <img src={refresh_img} className='w-5 h-5' alt="" />
                             </button>
                         </div>
