@@ -1,13 +1,9 @@
 import { arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore'
 import React, { useEffect, useState, useCallback, useContext } from 'react'
 import { auth, db, storage } from '../Firebase/Firebase'
-import friends from '../../images/micro/friends.png'
 import ReactCountryFlag from 'react-country-flag'
 import countryList from 'react-select-country-list'
 import { ref, getDownloadURL, } from 'firebase/storage'
-import chat from '../../images/micro/chat.png'
-import post from '../../images/micro/post.png'
-import { useNavigate } from 'react-router-dom'
 import userimg from '../../images/micro/user.png'
 import { AuthContext } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
@@ -17,7 +13,6 @@ export default function Vieworadd() {
     const [loaded, setLoaded] = useState(false)
     const [banner, setbannersrc] = useState("")
     const [already, setalready] = useState(false)
-    const navigate = useNavigate("/")
     const { user, setauthLoad } = useContext(AuthContext)
 
     const [dataToShow, setDataToShow] = useState({
@@ -27,7 +22,8 @@ export default function Vieworadd() {
         userskills: [],
         userdescription: "",
         userprofile: "",
-        friends: []
+        friends: [],
+        questions: []
     })
 
     const getBannerUrlFromStorage = useCallback(async () => {
@@ -36,7 +32,7 @@ export default function Vieworadd() {
             await getDownloadURL(banner).then((url) => {
                 setbannersrc(url)
             }).catch((error) => {
-                // console.log("Banner not available add it" + error);
+                console.log("Banner not available add it" + error);
             })
         } catch (error) {
             console.log("Banner not set yet");
@@ -83,7 +79,6 @@ export default function Vieworadd() {
 
     useEffect(() => {
         setLoaded(true)
-
         const checkFriend = async () => {
             const selfdoc = doc(db, auth.currentUser.uid, auth.currentUser.uid + "_userdata")
             const data = (await (getDoc(selfdoc))).data()
@@ -98,17 +93,21 @@ export default function Vieworadd() {
         }
 
         const getUserDataToView = async () => {
+            console.log(localStorage.getItem("currentUserToView"));
             const userdoc = doc(db, localStorage.getItem("currentUserToView"), localStorage.getItem("currentUserToView") + "_userdata")
-            const data = (await (getDoc(userdoc))).data()
+            const userquestions = doc(db, localStorage.getItem("currentUserToView"), localStorage.getItem("currentUserToView") + "_userquestions")
+            const data = await getDoc(userdoc)
+            const qs = await getDoc(userquestions)
             setDataToShow({
-                username: data.username,
-                usermail: data.email,
-                usercountry: data.country,
-                useroneliner: data.oneliner,
-                userskills: data.skills,
-                userdescription: data.description,
-                userprofile: data.profile_pic,
-                friends: data.friendlist
+                username: data.data().username,
+                usermail: data.data().email,
+                usercountry: data.data().country,
+                useroneliner: data.data().oneliner,
+                userskills: data.data().skills,
+                userdescription: data.data().description,
+                userprofile: data.data().profile_pic,
+                friends: data.data().friendlist,
+                questions: qs.data().self_questions
             })
         }
 
@@ -118,79 +117,85 @@ export default function Vieworadd() {
     }, [getBannerUrlFromStorage])
 
     return (
-        <div className={`p-4 relative fade-slide-in ${loaded ? "loaded" : ""} relative`}>
-            <button className='mb-2 text-sm font-semibold text-slate-600 transition-all duration-500 hover:text-[#fb6976]' onClick={() => {
-                navigate("/community")
-            }}>
-                &larr; Back to community
-            </button>
-            <div className="banner w-full h-44 rounded-2xl banner_color ">
+        <div className={` fade-slide-in ${loaded ? "loaded" : ""} relative`}>
+
+            <div className="banner w-3/4 mx-auto h-80 rounded-2xl banner_color ">
                 {banner && <img src={banner} alt="" className='w-full h-full object-cover rounded-2xl' />}
             </div>
-            <div className="left w-[20%] h-full absolute top-40 mt-2">
-                <div className="userdataholder">
-                    <div className="image-holder w-40 h-40 p-1 border-4 border-[#fb6976] rounded-full mx-auto bg-white">
-                        <img src={dataToShow.userprofile ? dataToShow.userprofile : userimg} className='w-full h-full rounded-full object-cover' alt="" />
-                    </div>
-                    <div className="usernameandemail text-3xl mt-2 font-bold text-slate-600 capitalize tracking-tight flex flex-col items-center">
-                        {dataToShow.username}
-                        <div className='normal-case text-xs text-slate-400 tracking-normal font-normal'>
-                            {dataToShow.usermail}
+
+            <div className="upper absolute w-full top-64">
+                <div className="userdataholder flex items-center justify-between w-[70%] gap-4 mx-auto">
+                    <div className='flex justify-start items-center gap-4 '>
+                        <div className="image-holder w-44 h-44 p-1 border-4 border-[#fb6976] rounded-full bg-white">
+                            <img src={dataToShow.userprofile ? dataToShow.userprofile : userimg} className='w-full h-full rounded-full object-cover bg-white' alt="" />
+                        </div>
+                        <div className="text-3xl capitalize font-bold text-slate-700 tracking-tight mt-12">
+                            {dataToShow.username}
+                            <div className="other-details text-sm font-semibold text-slate-600 tracking-normal flex justify-start items-center gap-2 ml-1">
+                                <div className="country flex justify-start gap-2 items-center">
+                                    {dataToShow.usercountry && <ReactCountryFlag
+                                        className='rounded-lg'
+                                        countryCode={dataToShow.usercountry}
+                                        svg
+                                        style={{
+                                            height: '2em',
+                                            width: '2em'
+                                        }} />}
+                                    {countryList().getLabel(dataToShow.usercountry)}
+                                </div>
+                                <div className="oneliner flex justify-start items-center gap-2">
+                                    {dataToShow.useroneliner && <div className='w-3 h-3 rounded-full bg-[#fb6976]'></div>}
+                                    {dataToShow.useroneliner}
+                                </div>
+                            </div>
+                            <div className="friendcount text-sm font-semibold text-slate-600 tracking-normal ml-1">
+                                friends {dataToShow.friends.length}
+                            </div>
                         </div>
                     </div>
-                    <div className="other-data text-sm text-slate-600 font-semibold mt-2">
-                        <div className="country flex justify-center items-center gap-2">
-                            {dataToShow.usercountry && <ReactCountryFlag
-                                className='rounded-lg'
-                                countryCode={dataToShow.usercountry}
-                                svg
-                                style={{
-                                    height: '1.8em',
-                                    width: '1.8em'
-                                }} />}
-                            {countryList().getLabel(dataToShow.usercountry)}
-                        </div>
-                        {dataToShow.useroneliner && <div className="oneliner flex justify-center items-center gap-1">
-                            <div className='bg-[#fb6976] rounded-full w-3 h-3'></div>
-                            {dataToShow.useroneliner}
-                        </div>}
-                    </div>
-                    <div className="actions text-sm font-semibold text-white mx-auto flex flex-col gap-2 items-center mt-3">
-                        <button className='bg-[#b1ccfc] flex justify-center items-center gap-2 w-40 py-2 rounded-md' onClick={addFriend}>{!already ? "Add as friend" : "Added as friend"}</button>
 
-                        <button className='bg-[#ffb8b8] flex justify-center items-center gap-2 w-40 py-2 rounded-md'>Chat with {dataToShow.username.split(" ")[0]} <img src={chat} className='w-4 h-4' alt="" /></button>
-
-                        <button className='bg-[#ebe5e5] flex justify-center items-center gap-2 w-40 py-2 rounded-md'>See all questions<img src={post} className='w-4 h-4' alt="" /></button>
-
-                        <button className='bg-[#eee] flex justify-center items-center gap-2 w-40 py-2 rounded-md'>Community posts<img src={friends} className='w-4 h-4' alt="" /></button>
+                    <div className='actions mt-12 flex justify-start items-center gap-2 mr-1'>
+                        <button className='bg-[#fb6976] px-4 py-2 rounded-md text-white text-sm font-semibold' onClick={() => {
+                            if (already) {
+                                toast.success(`${dataToShow.username} is already your friend`)
+                                return
+                            }
+                            addFriend()
+                        }}>
+                            {already ? "You are friends" : "Add as friend"}
+                        </button>
                     </div>
                 </div>
-            </div>
+            </div >
 
-            <div className="right absolute w-[75%] right-7 mt-3 pb-4">
-                <div className=' text-2xl text-slate-600 font-bold tracking-tight'>
-                    Skills ➡️
+
+            <div className="skills mt-32 form-shadow w-[70%] mx-auto p-4 rounded-2xl">
+                <div className="heading text-slate-600  mx-auto text-xl font-bold">
+                    Skills and knowledge ➡️
                 </div>
-                <div className="skills h-[7rem] bg-white p-4 form-shadow mt-2 rounded-2xl flex flex-wrap justify-start gap-2">
-
-                    {dataToShow.userskills.map(skill => {
+                <div className="skills mt-3 flex flex-wrap gap-2">
+                    {dataToShow.userskills.map((skill) => {
                         return (
-                            <div className='px-4 py-1 h-fit rounded-3xl font-semibold text-sm text-slate-600 capitalize border border-slate-100'>
+                            <div className='px-3 py-2 border border-gray-100 capitalize rounded-3xl text-sm font-semibold text-slate-600'>
                                 {skill}
                             </div>
                         )
                     })}
-
-                    {dataToShow.userskills.length === 0 && <div className='text-xl w-full text-center flex justify-center items-center font-bold text-slate-400 tracking-tight'>No skills added yet by {dataToShow.username.split(" ")[0]} ❌</div>}
-                </div>
-                <div className=' text-2xl text-slate-600 font-bold tracking-tight mt-3'>
-                    Little about {dataToShow.username.split(" ")[0]} 😊
-                </div>
-                <div className="skills bg-white p-4 text-sm font-semibold text-slate-500 form-shadow mt-2 rounded-2xl flex flex-wrap justify-start gap-2 min-h-[11rem]">
-                    {dataToShow.userdescription}
-                    {!dataToShow.userdescription && <div className='text-xl w-full h-full font-bold text-slate-400 tracking-tight text-center flex items-center'>No description set by {dataToShow.username.split(" ")[0]} ❌</div>}
+                    {dataToShow.userskills.length === 0 && <div className='text-sm font-semibold px-4 py-2 rounded-3xl border border-slate-100 w-fit'>No skills to show ❌</div>}
                 </div>
             </div>
-        </div >
+
+            <div className="about mt-4 form-shadow w-[70%] mx-auto p-4 rounded-2xl">
+                <div className="heading text-slate-600 capitalize mx-auto text-xl font-bold">
+                    About {dataToShow.username}
+                </div>
+                <div className="about mt-3 text-sm font-semibold ">
+                    {!dataToShow.userdescription ? <div className='text-sm font-semibold px-4 py-2 rounded-3xl border border-slate-100 w-fit text-slate-600'>No description to show 👁️</div>
+                        : <div>
+                            {dataToShow.userdescription}
+                        </div>}
+                </div>
+            </div>
+        </div>
     )
 }

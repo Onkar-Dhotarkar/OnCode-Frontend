@@ -64,7 +64,7 @@ export default function Banner() {
                 <div className="acc-images">
                     <div className="bg-banner w-[100vw] h-48 banner_color flex items-center relative">
                         <img className={`w-[100%] h-[100%] object-cover bg-blend-darken opacity-${bannersrc === null ? 0 : 100}`} src={bannersrc} alt="" />
-                        <input type="file" className='opacity-0 w-0 hidden cursor-pointer pointer-events-none' id="bannerinput" onChange={(e) => {
+                        <input type="file" accept='image/*' className='opacity-0 w-0 hidden cursor-pointer pointer-events-none' id="bannerinput" onChange={(e) => {
                             if (e.target.files[0]) {
                                 setfile(e.target.files[0])
                                 setModal(true)

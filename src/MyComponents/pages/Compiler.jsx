@@ -390,19 +390,19 @@ function Compiler() {
                                 document.getElementById('chat').classList.toggle('active')
                             }} alt="" />
                         </div>
-                        <div className="messages w-full h-[90%] overflow-x-hidden overflow-y-scroll px-4 py-3">
+                        <div className="messages w-full h-[80%] overflow-x-hidden overflow-y-scroll px-4 py-3">
                             {
                                 msgList.map((message) => {
                                     return (
                                         <div className={`flex items-center gap-2 ${message.username === user.username ? "justify-end" : "justify-start"} my-3 min-w-[30%]`}>
-                                            <div className='w-9 h-9 border-2 border-[#fb6976] rounded-full p-[0.12rem]'>
-                                                <img className='w-full h-full rounded-full object-cover' src={message.userprofile} alt="" />
-                                            </div>
                                             <div className={`flex flex-col text-xs text-slate-500 justify-center ${message.username === user.username ? "items-end" : "items-start"}`}>
                                                 {message.username}
                                                 <div className={` px-3 py-1 text-white text-sm font-semibold mt-[0.12rem] ${message.username === user.username ? "bg-[#fb6976] rounded-lg rounded-tr-none" : "bg-gray-300 rounded-lg rounded-tl-none"}`}>
                                                     {message.msg}
                                                 </div>
+                                            </div>
+                                            <div className='w-9 h-9 border-2 border-[#fb6976] rounded-full p-[1.2px]'>
+                                                <img className='w-full h-full rounded-full object-cover' src={message.userprofile} alt="" />
                                             </div>
                                         </div>
                                     )
@@ -412,6 +412,21 @@ function Compiler() {
                         <div className='absolute flex bottom-0 justify-center items-center gap-[2px]z py-3 w-full text-sm text-slate-600 backdrop-blur-xl rounded-md'>
                             <input id='input_msg' type="text" placeholder="Message" className="w-[80%] form-shadow px-2 py-2 rounded-md" onChange={(e) => {
                                 setMsg(e.target.value)
+                            }} onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    if (!msg) {
+                                        toast.error("Message can't be empty")
+                                        return
+                                    }
+                                    socketRef.current.emit('sent_msg', {
+                                        userprofile: user.userprofile,
+                                        username: user.username,
+                                        msg,
+                                        roomId
+                                    })
+                                    setmsgList(prev => ([...prev, { userprofile: user.userprofile, username: user.username, msg }]))
+                                    document.getElementById('input_msg').value = ""
+                                }
                             }} />
                             <button className='bg-[#fb6976] text-white font-semibold px-4 py-2 rounded-md' onClick={() => {
                                 if (!msg) {
@@ -440,7 +455,7 @@ function Compiler() {
                                     </div>
                                     {user.username}
                                 </div>
-                                <button id="room-creation" onClick={() => { setNewRoom(true) }} className=' bg-[#fb6976] text-white font-semibold text-sm py-2 px-3 rounded-md'>
+                                <button id="room-creation" onClick={() => { if (!room) setNewRoom(true) }} className=' bg-[#fb6976] text-white font-semibold text-sm py-2 px-3 rounded-md'>
                                     {room && usersInRoom.length > 0 ? "In " + usersInRoom[0].username.split(" ")[0] + "'s Room" : 'Create codespace+'}
                                 </button>
                                 {room &&

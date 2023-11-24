@@ -102,6 +102,10 @@ export default function UpdateProfile() {
 
     const updateProfilePicInDatabase = async () => {
         const userdoc = doc(db, user.useruid, user.useruid + "_userdata")
+        const users_id_doc = doc(db, "users_id", user.useruid)
+        await updateDoc(users_id_doc, {
+            profile: auth.currentUser.photoURL
+        })
         await updateDoc(userdoc, {
             profile_pic: auth.currentUser.photoURL
         })
@@ -155,7 +159,7 @@ export default function UpdateProfile() {
 
             <Modal isOpen={user_skills} toggle={() => setUserskills(!user_skills)} size='lg'>
                 <ModalHeader className='text-slate-600' toggle={() => setUserskills(!user_skills)}>
-                    Persolize so other folks can see your skills
+                    Personalize so other folks can see your skills
                 </ModalHeader>
                 <ModalBody className="flex items-center justify-center">
                     <ChangeSkills />
@@ -191,7 +195,7 @@ export default function UpdateProfile() {
                     <div className="current-user-details relative">
                         <div className="user-profile w-32 h-32 rounded-full border-3 border-[#fb6976] p-[2px] absolute left-[45%] top-4">
                             <img className='w-full h-full rounded-full object-cover shadow-2xl cursor-pointer' src={user.userprofile} alt="" />
-                            <input type="file" id="selectprof" className='w-0 h-0 opacity-0 hidden' onChange={(e) => {
+                            <input type="file" id="selectprof" accept='image/*' className='w-0 h-0 opacity-0 hidden' onChange={(e) => {
                                 if (e.target.files[0]) {
                                     // toast.success("oye")
                                     setProfile_image(e.target.files[0])

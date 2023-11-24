@@ -16,7 +16,7 @@ import Loader from '../Popups/Others/Loader'
 import PopMessage from '../Popups/Others/PopMessage'
 import UserNotFound from '../UserNotFound'
 import { github } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
-import { Modal, ModalHeader, ModalBody } from 'reactstrap'
+import { Modal, ModalBody } from 'reactstrap'
 const FileSaver = require('file-saver')
 
 export default function Codeview(props) {

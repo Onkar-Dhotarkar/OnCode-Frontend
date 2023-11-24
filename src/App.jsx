@@ -111,7 +111,7 @@ function App() {
       </div>
 
       <Router>
-        <div className='flex justify-between min-h-[50px] items-center mx-auto shadow-md px-10 sticky top-0 z-30 bg-white'>
+        {<div className='flex justify-between min-h-[50px] items-center mx-auto shadow-md px-10 sticky top-0 z-30 bg-white '>
           <LoadingBar
             color='#fb6976'
             height={3}
@@ -120,7 +120,10 @@ function App() {
               setauthLoad(0)
             }}
           />
-          <div className="main-name ">
+
+
+
+          <div className="main-name max-[900px]:w-full">
             <Link to="/" className='text-2xl font-bold text-slate-600 tracking-tight cursor-pointer no-underline'>
               <span className="text-[#fb6976]">On</span>Code<span className="text-[#fb6976]">.</span>
             </Link>
@@ -128,15 +131,19 @@ function App() {
               <img className='w-36 relative bottom-[95px] left-[-60px] -z-50 opacity-70' src={a2} alt="" />
             </div> */}
           </div>
-          <div className="nav-components flex justify-between items-center space-x-6">
+          <div className="hamburger hidden max-[900px]:block">
+            hamburger
+          </div>
+
+          <div className="nav-components flex justify-between items-center space-x-6 max-[900px]:hidden">
             <Link to='/community'>
               <button className='font-semibold text-sm transition-all text-slate-600 hover:text-[#fb6976]'>
                 Explore Community
               </button>
             </Link>
-            <button id='log-handler' className='text-slate-600 font-semibold rounded-md text-sm flex justify-center items-center gap-2 transition-all hover:text-[#fb6976]'>
+            {/* <button id='log-handler' className='text-slate-600 font-semibold rounded-md text-sm flex justify-center items-center gap-2 transition-all hover:text-[#fb6976]'>
               Contact Us
-            </button>
+            </button> */}
             <Link to='/we'>
               <button className='font-semibold text-sm transition-all text-slate-600 hover:text-[#fb6976]'>
                 We
@@ -162,7 +169,7 @@ function App() {
             </div>
           </div >
         </div >
-
+        }
         {/* Router setup  */}
         < Routes >
           <Route path="/" Component={LandingPage} />

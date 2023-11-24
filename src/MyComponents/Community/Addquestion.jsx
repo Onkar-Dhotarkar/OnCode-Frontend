@@ -107,7 +107,7 @@ export default function Addquestion() {
                             showPrintMargin={true}
                             showGutter={true}
                             highlightActiveLine={true}
-                            mode={'javascript'}
+                            mode={language}
                             theme='dracula'
                             style={{ height: "16rem", width: "calc(98%)", borderRadius: "10.5px" }}
                             wrapEnabled={true}

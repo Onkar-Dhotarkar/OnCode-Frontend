@@ -89,7 +89,8 @@ export default function SignUp() {
         const userDocRef = doc(userRef, auth.currentUser.uid)
         setDoc(userDocRef, {
             username: signupState.firstname + " " + signupState.lastname,
-            uid: auth.currentUser.uid
+            uid: auth.currentUser.uid,
+            profile: auth.currentUser.photoURL
         })
     }
 

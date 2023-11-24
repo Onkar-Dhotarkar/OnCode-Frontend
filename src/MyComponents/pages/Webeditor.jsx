@@ -134,23 +134,6 @@ body{
         }
     }, [htmlcode, csscode, jscode])
 
-    const uploadwebcodes = async () => {
-        setauthLoad(30)
-        if (!dataToAdd.filename || !dataToAdd.structure) {
-            setauthLoad(100)
-            toast.error(dataToAdd.structure)
-            return
-        }
-        setPopup(false)
-        const docCodeRef = doc(db, user.useruid, user.useruid + "_usercodes")
-        await updateDoc(docCodeRef, {
-            webpages: arrayUnion(dataToAdd)
-        })
-        setauthLoad(100)
-        setPopup(true)
-        toast.success("Webpage uploaded successfully")
-    }
-
     const copycode = (content) => {
         navigator.clipboard.writeText(content).then(() => {
             toast.success("Code copied")
@@ -177,7 +160,6 @@ body{
 
             {authenticated ? <div className={`flex justify-start gap-2 fade-slide-in ${loaded ? "loaded" : ""}`}>
                 < div className='w-[10%]'>
-
                     <div className="files w-[100%] text-sm font-bold text-slate-600 bg-gray-100 h-[100vh] flex flex-col gap-1 py-3">
                         <div className='html-file flex items-center gap-1 ml-3 mx-2 p-[0.32rem] rounded-lg cursor-pointer hover:bg-white' onClick={() => {
                             setCurrentLang('html')
@@ -210,9 +192,6 @@ body{
                 <div className="code w-[44%] h-[100vh] flex flex-col gap-2">
                     <div className="controls flex  items-center justify-between text-sm mt-2 mx-2">
                         <div className=' flex font-semibold items-center justify-start gap-2'>
-                            <button className='bg-gray-200 p-2 rounded-full' onClick={() => setPopup(true)}>
-                                <img className='w-4 h-4' src={upload} alt="" />
-                            </button>
                             <button className='bg-gray-200 p-2 rounded-full' onClick={() => {
                                 currentTheme === 'light' ? setCurrentTheme('dark') : setCurrentTheme('light')
                                 toast.success(`Theme set to ${currentTheme === 'light' ? 'dark' : 'light'}`)

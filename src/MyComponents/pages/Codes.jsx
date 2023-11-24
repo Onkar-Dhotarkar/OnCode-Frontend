@@ -191,9 +191,7 @@ export default function Codetable(props) {
                     </div>
                 </div>
                 <div className="codeTable">
-                    <div className="tablehead text-sm text-slate-600 flex justify-between items-center gap-2 px-5 mt-3">
-                        <input type="text" className='w-[30%] px-3 ml-1 py-2 rounded-md shadow-sm border-slate-200' placeholder='Search for your codes 🫡' />
-
+                    <div className="tablehead text-sm text-slate-600 flex justify-end items-center gap-2 px-5 mt-3">
                         <button className='border border-slate-200 w-32 px-3 py-2 rounded-2xl flex justify-center items-center gap-2' onClick={() => {
                             setFilter(!filter)
                         }}>
@@ -229,9 +227,8 @@ export default function Codetable(props) {
                         <div className='w-1/4 text-center'>Date</div>
                         <div className='w-1/4 text-center'>Actions</div>
                     </div>
-
                     {
-                        !category && !refresh && <div className='text-2xl text-slate-600 font-bold tracking-tight w-full flex flex-col justify-center items-center h-60'>
+                        category === false && !refresh && <div className='text-2xl text-slate-600 font-bold tracking-tight w-full flex flex-col justify-center items-center h-60'>
                             <div><img src={not} className='mb-3 drop-shadow-xl' alt="" /></div>
                             {langDetails ? <div className='flex justify-center items-center gap-2'>
                                 Add <span className='capitalize'> {langDetails} </span> langugage Codes to access them 😖
