@@ -310,7 +310,7 @@ export default function Communityhome() {
                         <div className="text-sm font-semibold mt-5 text-center">
                             Posted by you in community ➡️
                             {
-                                selfpost.map((post) => {
+                                selfpost && selfpost.map((post) => {
                                     return (<div className='about-responder mt-3 text-center'>
                                         <div className='user flex justify-center items-center gap-2 text-sm font-semibold capitalize'>
                                             <img src={post.posted_by.profile} className='w-8 h-8 rounded-full object-cover' alt="" />
