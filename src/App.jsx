@@ -34,7 +34,7 @@ import {
 
 
 
-function App() {
+function App()  {
   const { authenticated, setAuthenticated, user, setUser, authLoad, setauthLoad } = useContext(AuthContext)
 
   useEffect(() => {
